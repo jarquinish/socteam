@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useActions } from '../components/actions';
 import { AreaTag, CommitmentBadge, ProjectPriority, ProjectStatusBadge } from '../components/badges';
 import { copyRich } from '../components/clipboard';
+import { TeamsButton } from './History';
 import { EscalateForm, RescheduleForm } from '../components/CommitmentForms';
 import { Icon } from '../components/Icon';
 import { Modal } from '../components/Modal';
@@ -24,8 +25,34 @@ import {
 } from '../domain/selectors';
 import { sessionStats } from '../domain/summary';
 import { closingIssues, groupIssues, type Issue } from '../domain/validation';
-import type { Commitment, ID, Project, ReviewResult, Session } from '../domain/types';
+import type { AgendaSettings, Commitment, ID, Project, ReviewResult, Session } from '../domain/types';
 import { navigate } from '../router';
+
+type Block = keyof AgendaSettings;
+const BLOCK_LABEL: Record<Block, string> = { revision: 'Revisión', p1: 'P1', p2: 'P2', p3: 'P3' };
+
+/** Tiempo usado por bloque de agenda (se guarda por sesión en este navegador). */
+function useBlockClock(sessionId: string | undefined, block: Block): Record<Block, number> {
+  const key = `weekly-alignment-unblock:clock:${sessionId ?? ''}`;
+  const read = (): Record<Block, number> => {
+    try { return { revision: 0, p1: 0, p2: 0, p3: 0, ...JSON.parse(sessionStorage.getItem(key) ?? '{}') }; } catch { return { revision: 0, p1: 0, p2: 0, p3: 0 }; }
+  };
+  const [times, setTimes] = useState(read);
+  useEffect(() => { setTimes(read()); }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!sessionId) return;
+    const t = setInterval(() => {
+      if (document.hidden) return;
+      setTimes((prev) => {
+        const next = { ...prev, [block]: prev[block] + 1 };
+        try { sessionStorage.setItem(key, JSON.stringify(next)); } catch { /* sin storage */ }
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [sessionId, block, key]);
+  return times;
+}
 
 export function Meeting() {
   const { data, run } = useStore();
@@ -35,6 +62,9 @@ export function Meeting() {
   const [showClose, setShowClose] = useState(false);
   const [showList, setShowList] = useState(false);
   const [showExit, setShowExit] = useState(false);
+  const [boardBlock, setBoardBlock] = useState<Block>('p1');
+  const block: Block = session?.phase === 'revision' ? 'revision' : boardBlock;
+  const clock = useBlockClock(session && !closedId ? session.id : undefined, block);
 
   if (closedId) {
     const closed = byId(data.sessions, closedId);
@@ -64,6 +94,9 @@ export function Meeting() {
     <div className="meeting">
       <TopBar
         session={session}
+        block={block}
+        clock={clock}
+        agenda={data.settings.agenda}
         onPhase={goPhase}
         onList={() => setShowList(true)}
         onExit={() => setShowExit(true)}
@@ -72,7 +105,7 @@ export function Meeting() {
       {phase === 'revision' ? (
         <ReviewStep session={session} onContinue={() => goPhase('proyectos')} />
       ) : (
-        <BoardStep session={session} onClose={() => setShowClose(true)} />
+        <BoardStep session={session} onClose={() => setShowClose(true)} onBlock={setBoardBlock} />
       )}
 
       {showList && <SessionCommitments session={session} onClose={() => setShowList(false)} />}
@@ -120,8 +153,8 @@ export function Meeting() {
 
 /* ------------------------------------------------------------------ */
 
-function TopBar({ session, onPhase, onList, onExit, onClose }: {
-  session: Session; onPhase: (p: Session['phase']) => void; onList: () => void; onExit: () => void; onClose: () => void;
+function TopBar({ session, block, clock, agenda, onPhase, onList, onExit, onClose }: {
+  session: Session; block: Block; clock: Record<Block, number>; agenda: AgendaSettings; onPhase: (p: Session['phase']) => void; onList: () => void; onExit: () => void; onClose: () => void;
 }) {
   const { data } = useStore();
   const now = useNow(1000);
@@ -129,10 +162,14 @@ function TopBar({ session, onPhase, onList, onExit, onClose }: {
   const h = Math.floor(elapsed / 3600);
   const m = Math.floor((elapsed % 3600) / 60);
   const timer = h ? `${h}:${String(m).padStart(2, '0')} h` : `${m} min`;
+  const budget = agenda.revision + agenda.p1 + agenda.p2 + agenda.p3;
+  const used = Math.floor(clock[block] / 60);
+  const limit = agenda[block];
+  const over = limit > 0 && clock[block] > limit * 60;
   const st = sessionStats(data, session, now);
   const created = st.commitments.created;
   const steps: { key: Session['phase']; label: string }[] = [
-    { key: 'revision', label: 'Compromisos anteriores' },
+    { key: 'revision', label: 'Revisión' },
     { key: 'proyectos', label: 'Proyectos' },
   ];
 
@@ -140,7 +177,7 @@ function TopBar({ session, onPhase, onList, onExit, onClose }: {
     <header className="m-top">
       <div>
         <div className="title">WEEKLY ALIGNMENT &amp; UNBLOCK</div>
-        <div className="sub">Semana {fmtWeekRange(session.weekStart)} · {timer}</div>
+        <div className="sub">Semana {fmtWeekRange(session.weekStart)} · {timer}{budget ? ` de ${budget} min` : ''}</div>
       </div>
       <nav className="m-steps">
         {steps.map((s, i) => (
@@ -151,8 +188,14 @@ function TopBar({ session, onPhase, onList, onExit, onClose }: {
         <button className="m-step" onClick={onClose}><span className="n">3</span>Cierre</button>
       </nav>
       <span className="spacer" />
-      <span className={`pill ${st.blockers.followUp ? 'alert' : ''}`}><Icon name="lock" size={13} /> {st.blockers.followUp} bloqueos abiertos</span>
-      <button className="btn btn-sm" onClick={onList}><Icon name="checks" size={15} /> Compromisos · {created} {created === 1 ? 'nuevo' : 'nuevos'}</button>
+      {limit > 0 && (
+        <span className={`pill agenda ${over ? 'warn' : ''}`} title={over ? 'El bloque superó el tiempo sugerido' : 'Tiempo del bloque actual'}>
+          <Icon name="clock" size={13} /> {BLOCK_LABEL[block]} · {used} / {limit} min
+          <span className="agenda-track"><span style={{ width: `${Math.min(100, (clock[block] / (limit * 60)) * 100)}%` }} /></span>
+        </span>
+      )}
+      <span className={`pill hide-md ${st.blockers.followUp ? 'alert' : ''}`}><Icon name="lock" size={13} /> {st.blockers.followUp} {st.blockers.followUp === 1 ? 'bloqueo' : 'bloqueos'}</span>
+      <button className="btn btn-sm" onClick={onList} title={`${created} ${created === 1 ? 'compromiso nuevo' : 'compromisos nuevos'} en esta sesión`}><Icon name="checks" size={15} /> Compromisos · {created}</button>
       <button className="btn btn-sm" onClick={onExit}><Icon name="logout" size={15} /> Salir</button>
       <button className="btn btn-sm btn-primary" onClick={onClose}><Icon name="stop" size={13} /> Cerrar Weekly</button>
     </header>
@@ -317,7 +360,7 @@ function ReviewStep({ session, onContinue }: { session: Session; onContinue: () 
 /* 2. Proyectos                                                        */
 /* ------------------------------------------------------------------ */
 
-function BoardStep({ session, onClose }: { session: Session; onClose: () => void }) {
+function BoardStep({ session, onClose, onBlock }: { session: Session; onClose: () => void; onBlock: (b: Block) => void }) {
   const { data, run } = useStore();
   const [showP3, setShowP3] = useState(false);
   const sections = meetingQueue(data, session);
@@ -331,6 +374,9 @@ function BoardStep({ session, onClose }: { session: Session; onClose: () => void
   useEffect(() => {
     if (current && !session.reviewedProjectIds.includes(current.id)) run(markProjectReviewed, session.id, current.id);
   }, [current?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const sectionKey = visibleSections.find((sec) => sec.projects.some((p) => p.id === current?.id))?.key ?? 'p1';
+  useEffect(() => { onBlock(sectionKey.slice(0, 2) as Block); }, [sectionKey, onBlock]);
 
   const go = (delta: number) => {
     const next = order[idx + delta];
@@ -652,7 +698,7 @@ function CloseModal({ session, onCancel, onConfirm, onReview }: {
 
 function SummaryScreen({ session }: { session: Session }) {
   const toast = useToast();
-  const { data } = useStore();
+  const { data, server } = useStore();
   const k = session.snapshot!;
   const now = useNow();
   const pendingOverdue = data.commitments.filter((c) => isOverdue(c, now)).length;
@@ -679,6 +725,7 @@ function SummaryScreen({ session }: { session: Session }) {
             {k.warnings.length > 0 && <p className="muted" style={{ marginTop: 4 }}>{k.warnings.length} puntos quedaron por definir (incluidos en el resumen).</p>}
             {pendingOverdue > 0 && <p className="muted">{pendingOverdue} compromisos vencidos siguen abiertos.</p>}
           </div>
+          {server?.teams && <TeamsButton sessionId={session.id} large />}
           <button className="btn btn-lg" onClick={() => copy(k.commitmentsText, 'Compromisos')}><Icon name="copy" size={16} /> Copiar compromisos</button>
           <button className="btn btn-lg btn-primary" onClick={() => copy(k.summaryText, 'Resumen')}><Icon name="copy" size={16} /> Copiar resumen para Teams</button>
         </div>

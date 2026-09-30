@@ -39,6 +39,9 @@ const PATHS: Record<string, string> = {
   grip: 'M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01',
   download: 'M12 4v11M7 10.5l5 5 5-5M5 20h14',
   upload: 'M12 16V5M7 9.5l5-5 5 5M5 20h14',
+  chart: 'M4 20h16M7 16v-5M12 16V6M17 16v-8',
+  calendarAdd: 'M4 6h16v14H4zM4 10h16M8.5 3.5v4M15.5 3.5v4M12 13v5M9.5 15.5h5',
+  send: 'M4 12 20 4l-4 16-4-7zM12 13l8-9',
   logout: 'M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10',
 };
 

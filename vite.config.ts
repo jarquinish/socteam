@@ -5,4 +5,10 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   base: './',
   plugins: [react()],
+  server: {
+    // En desarrollo, /api va al servidor (npm run dev:server). Si no está corriendo, la app usa modo local.
+    proxy: { '/api': { target: 'http://localhost:8787', changeOrigin: true } },
+  },
+  // `vite preview` se comporta como un hosting estático (modo local).
+  preview: { proxy: {} },
 });

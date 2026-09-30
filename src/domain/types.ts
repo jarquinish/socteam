@@ -44,6 +44,8 @@ export interface Person {
   name: string;
   areaId?: ID;
   role?: string;
+  /** Correo corporativo: vincula el inicio de sesión con Microsoft (Easy Auth) con la persona. */
+  email?: string;
   archived?: boolean;
 }
 
@@ -82,6 +84,8 @@ export type BlockerKind = 'bloqueo' | 'decision';
 export interface LogItem {
   at: string;
   text: string;
+  /** Persona que hizo el cambio. */
+  by?: ID;
 }
 
 export interface Blocker {
@@ -200,10 +204,19 @@ export interface Session {
   snapshot?: SessionSnapshot;
 }
 
+/** Minutos sugeridos por bloque de la Weekly. */
+export interface AgendaSettings {
+  revision: number;
+  p1: number;
+  p2: number;
+  p3: number;
+}
+
 export interface Settings {
   directionName: string;
   /** Máximo recomendado de proyectos principales por área. */
   maxProjectsPerArea: number;
+  agenda: AgendaSettings;
 }
 
 /** Evento de dominio: bitácora para métricas futuras e integraciones (Teams, Power Automate...). */
@@ -212,6 +225,8 @@ export interface DomainEvent {
   at: string;
   type: string;
   entityId?: ID;
+  /** Persona que originó el cambio (si se conoce). */
+  actorId?: ID;
   data?: Record<string, unknown>;
 }
 

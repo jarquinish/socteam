@@ -3,7 +3,7 @@ import { useNow, useStore } from '../data/store';
 import {
   commentCommitment, createCommitment, escalateCommitment, rescheduleCommitment, updateCommitment,
 } from '../domain/operations';
-import { fmtDay, fmtDue, fmtStamp } from '../domain/dates';
+import { fmtDay, fmtDue } from '../domain/dates';
 import {
   activeProjects, areaName, byId, currentSession, displayStatus, personName, sortProjects,
 } from '../domain/selectors';
@@ -11,6 +11,9 @@ import type { DependencyRef, ID } from '../domain/types';
 import { CommitmentBadge } from './badges';
 import { DependencyPicker, DueFields, Field, PersonSelect } from './fields';
 import { Icon } from './Icon';
+import { LogList } from './LogList';
+import { downloadFile, slug } from './download';
+import { buildIcs } from '../domain/ics';
 import { Modal } from './Modal';
 import { useToast } from './Toast';
 
@@ -249,11 +252,7 @@ export function CommentForm({ commitmentId, onClose }: { commitmentId: ID; onClo
     >
       <textarea className="textarea" rows={3} value={text} onChange={(e) => setText(e.target.value)} placeholder="Avance, contexto o acuerdo" />
       {c.comments.length > 0 && (
-        <div className="log">
-          {[...c.comments].reverse().map((x, i) => (
-            <div className="log-item" key={i}><time>{fmtStamp(x.at)}</time><span>{x.text}</span></div>
-          ))}
-        </div>
+        <LogList items={[...c.comments].reverse()} entityId={c.id} />
       )}
     </Modal>
   );
@@ -277,7 +276,7 @@ export function CommitmentDetail({ commitmentId, onClose, actions }: {
   const log = [
     { at: c.createdAt, text: `Creado · ${fmtDue(c.originalDueDate, c.originalDueTime)}` },
     ...c.reschedules.map((r) => ({ at: r.at, text: `Reprogramado de ${fmtDue(r.fromDate, r.fromTime)} a ${fmtDue(r.toDate, r.toTime)} — ${r.reason}` })),
-    ...c.comments.map((x) => ({ at: x.at, text: x.text })),
+    ...c.comments.map((x) => ({ at: x.at, text: x.text, by: x.by })),
     ...(c.completedAt ? [{ at: c.completedAt, text: 'Cumplido' }] : []),
   ].sort((a, b) => a.at.localeCompare(b.at));
 
@@ -296,6 +295,15 @@ export function CommitmentDetail({ commitmentId, onClose, actions }: {
           {!done && <button className="btn" onClick={() => actions.reschedule(c.id)}><Icon name="reschedule" size={15} /> Reprogramar</button>}
           {!done && <button className="btn" onClick={() => actions.escalate(c.id)}><Icon name="escalate" size={15} /> Escalar</button>}
           <button className="btn" onClick={() => actions.comment(c.id)}><Icon name="message" size={15} /> Comentario</button>
+          {!done && c.dueDate && (
+            <button
+              className="btn"
+              title="Descarga un evento para Outlook o Teams"
+              onClick={() => downloadFile(`compromiso-${slug(c.action)}.ics`, buildIcs(data, [c], { calendarName: 'Weekly Alignment & Unblock', now: new Date(), appUrl: location.origin }), 'text/calendar')}
+            >
+              <Icon name="calendarAdd" size={15} /> Calendario
+            </button>
+          )}
           {done
             ? <button className="btn" onClick={() => actions.reopen(c.id)}><Icon name="restore" size={15} /> Reabrir</button>
             : <button className="btn btn-primary" onClick={() => actions.complete(c.id)}><Icon name="check" size={15} /> Cumplido</button>}
@@ -316,9 +324,7 @@ export function CommitmentDetail({ commitmentId, onClose, actions }: {
       </div>
       <div>
         <div className="upper muted" style={{ marginBottom: 8 }}>Historial</div>
-        <div className="log">
-          {log.map((x, i) => <div className="log-item" key={i}><time>{fmtStamp(x.at)}</time><span>{x.text}</span></div>)}
-        </div>
+        <LogList items={log} entityId={c.id} />
       </div>
     </Modal>
   );

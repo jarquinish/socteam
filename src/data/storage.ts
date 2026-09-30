@@ -23,6 +23,8 @@ export function migrate(raw: unknown): AppData | null {
   const lists = ['areas', 'people', 'projects', 'blockers', 'commitments', 'sessions', 'events'] as const;
   if (!lists.every((k) => Array.isArray(d[k]))) return null;
   if (!d.settings) return null;
+  // Campos agregados en V2: se completan con valores por defecto.
+  d.settings.agenda ??= { revision: 10, p1: 25, p2: 15, p3: 5 };
   return d as AppData;
 }
 

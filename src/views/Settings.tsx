@@ -22,6 +22,7 @@ export function Settings() {
   const [personModal, setPersonModal] = useState<{ id?: ID } | null>(null);
   const [name, setName] = useState(data.settings.directionName);
   const [max, setMax] = useState(data.settings.maxProjectsPerArea);
+  const [agenda, setAgenda] = useState(data.settings.agenda);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const areas = [...data.areas].sort((a, b) => a.order - b.order);
@@ -107,13 +108,14 @@ export function Settings() {
           <button className="btn btn-sm btn-primary" onClick={() => setPersonModal({})}><Icon name="plus" size={15} /> Agregar persona</button>
         </div>
         <table className="tbl responsive">
-          <thead><tr><th>Nombre</th><th>Área</th><th>Puesto</th><th /></tr></thead>
+          <thead><tr><th>Nombre</th><th>Área</th><th>Puesto</th><th>Correo</th><th /></tr></thead>
           <tbody>
             {people.map((p) => (
               <tr key={p.id}>
                 <td data-label="Nombre" className="cell-title">{p.name}</td>
                 <td data-label="Área">{areaName(data, p.areaId) || <span className="faint">—</span>}</td>
                 <td data-label="Puesto" className="muted">{p.role ?? '—'}</td>
+                <td data-label="Correo" className="muted small">{p.email ?? '—'}</td>
                 <td>
                   <div className="actions">
                     <button className="btn btn-ghost btn-icon btn-sm" onClick={() => setPersonModal({ id: p.id })} title="Editar"><Icon name="edit" size={15} /></button>
@@ -152,12 +154,26 @@ export function Settings() {
             <input className="input" type="number" min={1} max={20} value={max} onChange={(e) => setMax(Number(e.target.value))} />
           </Field>
         </div>
+        <div className="field">
+          <span className="field-label">Agenda de la Weekly (minutos sugeridos por bloque)</span>
+          <div className="row-wrap">
+            {([['revision', 'Compromisos anteriores'], ['p1', 'P1'], ['p2', 'P2'], ['p3', 'P3']] as const).map(([k, label]) => (
+              <label key={k} className="row" style={{ gap: 6 }}>
+                <span className="small strong">{label}</span>
+                <input className="input" style={{ width: 72 }} type="number" min={0} max={180} value={agenda[k]} onChange={(e) => setAgenda({ ...agenda, [k]: Number(e.target.value) })} />
+              </label>
+            ))}
+            <span className="small muted">Total: {agenda.revision + agenda.p1 + agenda.p2 + agenda.p3} min · 0 = sin límite</span>
+          </div>
+        </div>
         <div>
-          <button className="btn btn-primary" onClick={() => { if (run(saveSettings, { directionName: name, maxProjectsPerArea: max })) toast('Configuración guardada'); }}>
+          <button className="btn btn-primary" onClick={() => { if (run(saveSettings, { directionName: name, maxProjectsPerArea: max, agenda })) toast('Configuración guardada'); }}>
             Guardar
           </button>
         </div>
       </section>
+
+      <Integrations />
 
       <section className="card card-pad stack">
         <h2>Datos</h2>
@@ -252,8 +268,9 @@ function PersonModal({ id, onClose }: { id?: ID; onClose: () => void }) {
   const [name, setName] = useState(p?.name ?? '');
   const [area, setArea] = useState<ID | undefined>(p?.areaId);
   const [role, setRole] = useState(p?.role ?? '');
+  const [email, setEmail] = useState(p?.email ?? '');
   const save = () => {
-    if (run(savePerson, { id, name, areaId: area, role })) {
+    if (run(savePerson, { id, name, areaId: area, role, email })) {
       toast(p ? 'Persona actualizada' : 'Persona agregada');
       onClose();
     }
@@ -272,6 +289,68 @@ function PersonModal({ id, onClose }: { id?: ID; onClose: () => void }) {
         </select>
       </Field>
       <Field label="Puesto"><input className="input" value={role} onChange={(e) => setRole(e.target.value)} placeholder="Ej. Gerente de Contenido" /></Field>
+      <Field label="Correo corporativo" hint="Con inicio de sesión Microsoft, la app reconoce a la persona por este correo.">
+        <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nombre@socasesores.com.mx" />
+      </Field>
     </Modal>
+  );
+}
+
+function Integrations() {
+  const { server, sync, me } = useStore();
+  const toast = useToast();
+  const test = async () => {
+    try {
+      const r = await fetch('/api/teams/test', { method: 'POST' });
+      const body = (await r.json().catch(() => ({}))) as { error?: string };
+      toast(r.ok ? 'Mensaje de prueba enviado a Teams' : `Teams: ${body.error ?? r.status}`, r.ok ? 'ok' : 'error');
+    } catch {
+      toast('Sin conexión con el servidor', 'error');
+    }
+  };
+  const rows = [
+    {
+      on: sync.kind === 'server',
+      title: 'Datos compartidos',
+      text: sync.kind === 'server'
+        ? 'Conectado al servidor: todos ven la misma información en tiempo real.'
+        : 'Modo local: los datos viven en este navegador. Para compartirlos, instala el servidor (README → Servidor).',
+    },
+    {
+      on: !!me.locked,
+      title: 'Inicio de sesión Microsoft',
+      text: me.locked
+        ? `Identificado como ${me.email}.`
+        : server?.auth === 'easyauth'
+          ? `Sesión activa (${me.email ?? 'sin correo'}), pero no coincide con ninguna persona: agrega su correo en Personas.`
+          : 'Sin inicio de sesión corporativo: cada quien elige su nombre. Se activa con Azure App Service Authentication (AUTH_MODE=easyauth).',
+    },
+    {
+      on: !!server?.teams,
+      title: 'Teams',
+      text: server?.teams
+        ? `Webhook configurado. ${server.reminders ? 'Recordatorios activos: 24 h antes y al vencer.' : 'Recordatorios desactivados.'}`
+        : 'Sin webhook. Configura TEAMS_WEBHOOK_URL en el servidor para publicar resúmenes y recordatorios.',
+      action: server?.teams ? <button className="btn btn-sm" onClick={test}><Icon name="send" size={14} /> Enviar prueba</button> : null,
+    },
+    {
+      on: true,
+      title: 'Calendario (Outlook)',
+      text: server?.calendar
+        ? 'Cada compromiso se puede agregar al calendario y cada persona puede suscribirse a su calendario desde Mis compromisos.'
+        : 'Cada compromiso y cada lista personal se pueden descargar como evento (.ics).',
+    },
+  ];
+  return (
+    <section className="card card-pad">
+      <h2 style={{ marginBottom: 6 }}>Integraciones</h2>
+      {rows.map((r) => (
+        <div className="integration" key={r.title}>
+          <span className={`dot ${r.on ? 'on' : ''}`} />
+          <div className="grow"><div className="strong">{r.title}</div><div className="small muted">{r.text}</div></div>
+          {r.action}
+        </div>
+      ))}
+    </section>
   );
 }

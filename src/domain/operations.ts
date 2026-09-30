@@ -17,6 +17,8 @@ import type {
 export interface Ctx {
   now: Date;
   newId: () => ID;
+  /** Persona que ejecuta la operación (para la bitácora de cambios). */
+  actorId?: ID;
 }
 
 export class DomainError extends Error {}
@@ -26,7 +28,7 @@ const MAX_EVENTS = 5000;
 const stamp = (ctx: Ctx) => ctx.now.toISOString();
 
 function emit(d: AppData, ctx: Ctx, type: string, entityId?: ID, data?: Record<string, unknown>) {
-  d.events.push({ id: ctx.newId(), at: stamp(ctx), type, entityId, data });
+  d.events.push({ id: ctx.newId(), at: stamp(ctx), type, entityId, actorId: ctx.actorId, data });
   if (d.events.length > MAX_EVENTS) d.events.splice(0, d.events.length - MAX_EVENTS);
 }
 
@@ -37,6 +39,7 @@ function mustGet<T extends { id: ID }>(list: T[], id: ID, what: string): T {
 }
 
 const clean = (s?: string) => (s ?? '').trim();
+const cleanEmail = (s?: string) => clean(s).toLowerCase() || undefined;
 
 /* ================================================================== */
 /* Áreas y personas                                                    */
@@ -100,6 +103,7 @@ export interface PersonInput {
   name: string;
   areaId?: ID;
   role?: string;
+  email?: string;
 }
 
 export function savePerson(d: AppData, ctx: Ctx, input: PersonInput): ID {
@@ -107,12 +111,12 @@ export function savePerson(d: AppData, ctx: Ctx, input: PersonInput): ID {
   if (!name) throw new DomainError('La persona necesita un nombre');
   if (input.id) {
     const p = mustGet(d.people, input.id, 'Persona');
-    Object.assign(p, { name, areaId: input.areaId || undefined, role: clean(input.role) || undefined });
+    Object.assign(p, { name, areaId: input.areaId || undefined, role: clean(input.role) || undefined, email: cleanEmail(input.email) });
     emit(d, ctx, 'person.updated', p.id);
     return p.id;
   }
   const id = ctx.newId();
-  d.people.push({ id, name, areaId: input.areaId || undefined, role: clean(input.role) || undefined });
+  d.people.push({ id, name, areaId: input.areaId || undefined, role: clean(input.role) || undefined, email: cleanEmail(input.email) });
   emit(d, ctx, 'person.created', id);
   return id;
 }
@@ -275,7 +279,11 @@ export interface BlockerInput {
 }
 
 function blockerLog(b: Blocker, ctx: Ctx, text: string) {
-  b.history.push({ at: stamp(ctx), text });
+  b.history.push({ at: stamp(ctx), text, by: ctx.actorId });
+}
+
+function noteItem(ctx: Ctx, text: string) {
+  return { at: stamp(ctx), text, by: ctx.actorId };
 }
 
 export function createBlocker(d: AppData, ctx: Ctx, input: BlockerInput): ID {
@@ -484,7 +492,7 @@ function markCompleted(c: Commitment, ctx: Ctx, sessionId: ID | undefined, note?
   c.status = 'cumplido';
   c.completedAt = stamp(ctx);
   c.completedSessionId = sessionId;
-  if (note) c.comments.push({ at: stamp(ctx), text: note });
+  if (note) c.comments.push(noteItem(ctx, note));
 }
 
 /** Marca como cumplido. Si es el compromiso de un bloqueo, el bloqueo queda resuelto. */
@@ -508,7 +516,7 @@ export function reopenCommitment(d: AppData, ctx: Ctx, id: ID) {
   c.status = c.reschedules.length ? 'reprogramado' : 'pendiente';
   c.completedAt = undefined;
   c.completedSessionId = undefined;
-  c.comments.push({ at: stamp(ctx), text: 'Reabierto' });
+  c.comments.push(noteItem(ctx, 'Reabierto'));
   emit(d, ctx, 'commitment.reopened', id);
   const b = byId(d.blockers, c.blockerId);
   if (b && b.column === 'resuelto' && b.commitmentId === c.id) moveBlocker(d, ctx, b.id, 'en_gestion');
@@ -567,7 +575,7 @@ export function escalateCommitment(d: AppData, ctx: Ctx, id: ID, input: { to: st
   const to = clean(input.to) || 'Dirección';
   c.escalations.push({ at: stamp(ctx), to, note: clean(input.note) || undefined });
   if (isOpen(c)) c.status = 'escalado';
-  c.comments.push({ at: stamp(ctx), text: `Escalado a ${to}${clean(input.note) ? `: ${clean(input.note)}` : ''}` });
+  c.comments.push(noteItem(ctx, `Escalado a ${to}${clean(input.note) ? `: ${clean(input.note)}` : ''}`));
   emit(d, ctx, 'commitment.escalated', id, { to });
   const b = byId(d.blockers, c.blockerId);
   if (b) blockerLog(b, ctx, `Escalado a ${to}`);
@@ -577,7 +585,7 @@ export function escalateCommitment(d: AppData, ctx: Ctx, id: ID, input: { to: st
 export function commentCommitment(d: AppData, ctx: Ctx, id: ID, text: string): true {
   const c = mustGet(d.commitments, id, 'Compromiso');
   if (!clean(text)) throw new DomainError('Escribe el comentario');
-  c.comments.push({ at: stamp(ctx), text: clean(text) });
+  c.comments.push(noteItem(ctx, clean(text)));
   emit(d, ctx, 'commitment.commented', id);
   return true;
 }
@@ -651,7 +659,7 @@ export function reviewCommitment(
       break;
     case 'no':
       c.missedCount += 1;
-      c.comments.push({ at: stamp(ctx), text: 'Revisión Weekly: no se cumplió' });
+      c.comments.push(noteItem(ctx, 'Revisión Weekly: no se cumplió'));
       emit(d, ctx, 'commitment.missed', c.id, { sessionId });
       break;
     case 'reprogramar':
@@ -701,7 +709,13 @@ export function saveSettings(d: AppData, ctx: Ctx, input: Partial<AppData['setti
   const name = input.directionName !== undefined ? clean(input.directionName) : d.settings.directionName;
   if (!name) throw new DomainError('Escribe el nombre de la Dirección');
   const max = input.maxProjectsPerArea ?? d.settings.maxProjectsPerArea;
-  d.settings = { directionName: name, maxProjectsPerArea: Math.max(1, Math.min(20, Math.round(max))) };
+  const minutes = (v: number) => Math.max(0, Math.min(180, Math.round(Number(v) || 0)));
+  const a = { ...d.settings.agenda, ...input.agenda };
+  d.settings = {
+    directionName: name,
+    maxProjectsPerArea: Math.max(1, Math.min(20, Math.round(max))),
+    agenda: { revision: minutes(a.revision), p1: minutes(a.p1), p2: minutes(a.p2), p3: minutes(a.p3) },
+  };
   emit(d, ctx, 'settings.updated');
   return true;
 }

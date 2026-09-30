@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+import { copyRich } from '../components/clipboard';
+import { downloadFile, slug } from '../components/download';
+import { personCalendar } from '../domain/ics';
 import { useActions } from '../components/actions';
 import { CommitmentBadge } from '../components/badges';
 import { PersonSelect } from '../components/fields';
@@ -13,24 +15,30 @@ import {
 import type { Commitment } from '../domain/types';
 import { setParams } from '../router';
 
-const ME_KEY = 'weekly-alignment-unblock:me';
-
-function readMe(): string {
-  try { return localStorage.getItem(ME_KEY) ?? ''; } catch { return ''; }
-}
-
 /** Checklist operativo posterior a la junta: sólo lo que requiere mi gestión. */
 export function MyCommitments({ params }: { params: URLSearchParams }) {
-  const { data, run } = useStore();
+  const { data, run, me: identity, server } = useStore();
   const actions = useActions();
   const toast = useToast();
   const now = useNow();
-  const me = params.get('persona') ?? readMe();
+  // Por defecto, la persona con la que se inició sesión; ?persona= permite ver a otra.
+  const me = params.get('persona') ?? identity.person?.id ?? '';
 
-  useEffect(() => {
-    if (!me) return;
-    try { localStorage.setItem(ME_KEY, me); } catch { /* sin storage */ }
-  }, [me]);
+  const downloadCalendar = () => {
+    if (!person) return;
+    downloadFile(`compromisos-${slug(person.name)}.ics`, personCalendar(data, person.id, { now: new Date(), appUrl: location.origin }), 'text/calendar');
+  };
+  const subscribe = async () => {
+    if (!person) return;
+    try {
+      const r = await fetch(`/api/calendar-link/${encodeURIComponent(person.id)}`);
+      const { url } = (await r.json()) as { url: string };
+      const ok = await copyRich(url);
+      toast(ok ? 'Enlace copiado. En Outlook: Agregar calendario → Desde Internet.' : url, ok ? 'ok' : 'error');
+    } catch {
+      toast('No se pudo obtener el enlace del calendario', 'error');
+    }
+  };
 
   const person = byId(data.people, me);
   const managedArea = data.areas.find((a) => a.managerId === me && !a.archived);
@@ -53,7 +61,15 @@ export function MyCommitments({ params }: { params: URLSearchParams }) {
           <p>Sólo lo que requiere tu gestión.</p>
         </div>
         <div style={{ width: 260 }}>
-          <PersonSelect data={data} value={me || undefined} onChange={(v) => setParams('/mis-compromisos', { persona: v })} placeholder="¿Quién eres?" />
+          <PersonSelect
+            data={data}
+            value={me || undefined}
+            onChange={(v) => {
+              if (!identity.person && !identity.locked) identity.setPersonId(v);
+              setParams('/mis-compromisos', { persona: v && v !== identity.person?.id ? v : undefined });
+            }}
+            placeholder="¿Quién eres?"
+          />
         </div>
       </header>
 
@@ -70,6 +86,14 @@ export function MyCommitments({ params }: { params: URLSearchParams }) {
                 <div className="upper muted">Mis pendientes · {person.name}</div>
                 <h2 style={{ marginTop: 4 }}>{mine.length} por gestionar</h2>
               </div>
+              <button className="btn btn-sm" onClick={downloadCalendar} title="Descarga tus compromisos abiertos como eventos (.ics)">
+                <Icon name="calendarAdd" size={15} /> Descargar a calendario
+              </button>
+              {server?.calendar && (
+                <button className="btn btn-sm" onClick={subscribe} title="Calendario que se actualiza solo en Outlook">
+                  <Icon name="calendar" size={15} /> Suscribir en Outlook
+                </button>
+              )}
               {mine.some((c) => displayStatus(c, now) === 'vencido') && (
                 <span className="badge st-vencido">{mine.filter((c) => displayStatus(c, now) === 'vencido').length} vencido(s)</span>
               )}

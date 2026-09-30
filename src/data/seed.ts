@@ -17,10 +17,12 @@ export const DEFAULT_AREAS: { name: string; color: string }[] = [
   { name: 'SOC Store', color: '#5DC65E' },
 ];
 
+export const DEFAULT_AGENDA = { revision: 10, p1: 25, p2: 15, p3: 5 };
+
 export function emptyData(): AppData {
   return {
     version: 1,
-    settings: { directionName: 'Dirección de Posicionamiento', maxProjectsPerArea: 5 },
+    settings: { directionName: 'Dirección de Posicionamiento', maxProjectsPerArea: 5, agenda: { ...DEFAULT_AGENDA } },
     areas: DEFAULT_AREAS.map((a, i) => ({ id: `area-${i + 1}`, ...a, order: i + 1 })),
     people: [],
     projects: [],
@@ -51,7 +53,9 @@ export function createSeed(now: Date): AppData {
   const [contenido, diseno, marketing, store] = d.areas as [Area, Area, Area, Area];
 
   const person = (name: string, area: Area, role: string, manager = false): Person => {
-    const p: Person = { id: id('per'), name, areaId: area.id, role };
+    const email = `${name.split(' ')[0][0]}${name.split(' ')[1]}@socasesores.com.mx`
+      .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const p: Person = { id: id('per'), name, areaId: area.id, role, email };
     d.people.push(p);
     if (manager) area.managerId = p.id;
     return p;

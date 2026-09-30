@@ -3,12 +3,12 @@
  * (proyecto, bloqueo, compromiso, reprogramar...) sin gestionar modales propios.
  * Los modales se apilan: p. ej. Detalle → Reprogramar → vuelve al detalle.
  */
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useStore } from '../data/store';
 import {
   completeCommitment, deleteCommitment, reopenCommitment, resolveBlocker, moveBlocker,
 } from '../domain/operations';
-import { fmtStamp, fmtDue } from '../domain/dates';
+import { fmtDue } from '../domain/dates';
 import {
   areaName, blockerCommitment, BLOCKER_COLUMN_LABEL, byId, currentSession, isBlockerActionable, personName,
 } from '../domain/selectors';
@@ -17,6 +17,7 @@ import { BlockerForm } from './BlockerForm';
 import { CommentForm, CommitmentDetail, CommitmentForm, EscalateForm, RescheduleForm } from './CommitmentForms';
 import { Icon } from './Icon';
 import { ConfirmModal, Modal } from './Modal';
+import { LogList } from './LogList';
 import { ProjectForm } from './ProjectForm';
 import { useToast } from './Toast';
 
@@ -56,6 +57,13 @@ export function ActionsProvider({ children }: { children: ReactNode }) {
   const [stack, setStack] = useState<ModalSpec[]>([]);
   const push = useCallback((m: ModalSpec) => setStack((s) => [...s, m]), []);
   const pop = useCallback(() => setStack((s) => s.slice(0, -1)), []);
+
+  // Al cambiar de pantalla se cierran los modales abiertos.
+  useEffect(() => {
+    const clear = () => setStack([]);
+    window.addEventListener('hashchange', clear);
+    return () => window.removeEventListener('hashchange', clear);
+  }, []);
 
   const sessionId = currentSession(data)?.id;
 
@@ -188,9 +196,7 @@ function BlockerDetail({ blockerId, onClose, actions: a }: { blockerId: ID; onCl
       </div>
       <div>
         <div className="upper muted" style={{ marginBottom: 8 }}>Historial</div>
-        <div className="log">
-          {b.history.map((x, i) => <div className="log-item" key={i}><time>{fmtStamp(x.at)}</time><span>{x.text}</span></div>)}
-        </div>
+        <LogList items={b.history} entityId={b.id} />
       </div>
     </Modal>
   );

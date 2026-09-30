@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { publishSummaryToTeams } from '../components/teams';
 import { copyRich } from '../components/clipboard';
 import { Icon } from '../components/Icon';
 import { Modal } from '../components/Modal';
@@ -81,6 +82,7 @@ export function History() {
 
 export function SummaryModal({ session, onClose }: { session: Session; onClose: () => void }) {
   const toast = useToast();
+  const { server } = useStore();
   const k = session.snapshot!;
   const copy = async (text: string, what: string) => {
     const ok = await copyRich(text);
@@ -94,6 +96,7 @@ export function SummaryModal({ session, onClose }: { session: Session; onClose: 
       onClose={onClose}
       footer={
         <>
+          {server?.teams && <TeamsButton sessionId={session.id} />}
           <button className="btn" onClick={() => copy(k.commitmentsText, 'Compromisos')}><Icon name="copy" size={15} /> Copiar compromisos</button>
           <button className="btn btn-primary" onClick={() => copy(k.summaryText, 'Resumen')}><Icon name="copy" size={15} /> Copiar resumen para Teams</button>
         </>
@@ -101,5 +104,25 @@ export function SummaryModal({ session, onClose }: { session: Session; onClose: 
     >
       <pre className="summary-pre">{k.summaryText}</pre>
     </Modal>
+  );
+}
+
+/** Publica el resumen en el canal de Teams configurado en el servidor. */
+export function TeamsButton({ sessionId, large }: { sessionId: string; large?: boolean }) {
+  const toast = useToast();
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      className={`btn ${large ? 'btn-lg' : ''}`}
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true);
+        const r = await publishSummaryToTeams(sessionId);
+        setBusy(false);
+        toast(r.ok ? 'Resumen publicado en el canal de Teams' : `No se publicó: ${r.error}`, r.ok ? 'ok' : 'error');
+      }}
+    >
+      <Icon name="send" size={large ? 16 : 15} /> {busy ? 'Publicando…' : 'Publicar en Teams'}
+    </button>
   );
 }

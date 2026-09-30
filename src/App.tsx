@@ -13,6 +13,8 @@ import { MyCommitments } from './views/MyCommitments';
 import { History } from './views/History';
 import { Settings } from './views/Settings';
 import { Meeting } from './views/Meeting';
+import { Metrics } from './views/Metrics';
+import { PersonSelect } from './components/fields';
 
 interface NavItem { path: string; label: string; short: string; icon: string; count?: number }
 
@@ -28,6 +30,7 @@ export function App() {
     case '/dependencias': view = <Dependencies />; break;
     case '/mis-compromisos': view = <MyCommitments params={route.params} />; break;
     case '/historial': view = <History />; break;
+    case '/metricas': view = <Metrics />; break;
     case '/configuracion': view = <Settings />; break;
     default: view = <Dashboard />;
   }
@@ -43,7 +46,7 @@ export function useStartWeekly() {
 }
 
 function Shell({ path, children }: { path: string; children: ReactNode }) {
-  const { data } = useStore();
+  const { data, sync, me } = useStore();
   const now = useNow();
   const stats = dashboardStats(data, now);
   const live = currentSession(data);
@@ -58,6 +61,7 @@ function Shell({ path, children }: { path: string; children: ReactNode }) {
   ];
   const after: NavItem[] = [
     { path: '/mis-compromisos', label: 'Mis compromisos', short: 'Mis pend.', icon: 'user' },
+    { path: '/metricas', label: 'Métricas', short: 'Métricas', icon: 'chart' },
     { path: '/historial', label: 'Historial', short: 'Historial', icon: 'history' },
     { path: '/configuracion', label: 'Configuración', short: 'Config.', icon: 'settings' },
   ];
@@ -84,6 +88,23 @@ function Shell({ path, children }: { path: string; children: ReactNode }) {
         <div className="nav-sep" />
         {after.map(link)}
         <div className="sidebar-cta">
+          <div className="who">
+            {me.person ? (
+              <>
+                <span className="muted">Estás como</span>
+                <span className="name">{me.person.name}</span>
+                {me.locked ? <span className="muted">{me.email}</span> : (
+                  <button className="link-btn small strong" style={{ color: 'var(--soc)' }} onClick={() => me.setPersonId(undefined)}>Cambiar</button>
+                )}
+              </>
+            ) : (
+              <>
+                <span className="muted">¿Quién eres?</span>
+                <PersonSelect data={data} value={undefined} onChange={me.setPersonId} placeholder="Selecciona tu nombre" />
+              </>
+            )}
+          </div>
+          <SyncBadge sync={sync} />
           <button className="btn btn-primary btn-lg btn-block" onClick={startWeekly} title={live ? 'Continuar Weekly' : 'Iniciar Weekly'}>
             <Icon name="play" size={16} />
             <span className="label">{live ? 'Continuar Weekly' : 'Iniciar Weekly'}</span>
@@ -99,6 +120,20 @@ function Shell({ path, children }: { path: string; children: ReactNode }) {
           </a>
         ))}
       </nav>
+    </div>
+  );
+}
+
+function SyncBadge({ sync }: { sync: ReturnType<typeof useStore>['sync'] }) {
+  const label = sync.kind === 'local'
+    ? 'Guardado en este navegador'
+    : sync.status === 'offline'
+      ? `Sin conexión${sync.pending ? ` · ${sync.pending} pendiente${sync.pending > 1 ? 's' : ''}` : ''}`
+      : sync.status === 'saving' ? 'Guardando…' : 'Compartido · al día';
+  const cls = sync.kind === 'local' ? 'local' : sync.status;
+  return (
+    <div className={`sync ${cls}`} title={label} role="status">
+      <i /> <span>{label}</span>
     </div>
   );
 }
