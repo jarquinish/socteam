@@ -90,4 +90,4 @@ OBSERVACIONES:
 
 | Campaña       | Carpeta                                      | Estado                 | Fuentes                     |
 | ------------- | -------------------------------------------- | ---------------------- | --------------------------- |
-| ¿Qué es SOC?  | [`active/que-es-soc/`](active/que-es-soc/campaign.md) | ACTIVA — por iniciar | REF-CAMP-001, REF-CAMP-002 |
+| ¿Qué es SOC?  | [`active/que-es-soc/`](active/que-es-soc/campaign.md) | ACTIVA — inicia nov. 2026 (dos años) | REF-CAMP-001, REF-CAMP-002 |

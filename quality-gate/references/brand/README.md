@@ -73,13 +73,13 @@ Si algún dato no se conoce, escribir "No especificado". No inventarlo.
 ```
 ID:                REF-BRAND-001
 NOMBRE:            Manual de Identidad SOC 2026
-VERSIÓN:           2026 (número de versión no especificado en el documento)
-FECHA:             No especificada en el documento (PDF generado el 11/09/2026)
+VERSIÓN:           Octubre 2026 (confirmado por Dirección)
+FECHA:             Octubre 2026
 ESTADO:            VIGENTE (confirmado por Dirección el 30/09/2026)
 FUENTE:            Proporcionado por Dirección en la sesión de implementación de Quality Gate
 PROPIETARIO:       No especificado
 ARCHIVO:           Manual_de_Identidad_SOC_2026.pdf
-REEMPLAZA A:       Brandbook SOC 2022 (no incorporado a /references ni a /archive, por decisión de Dirección)
+REEMPLAZA A:       —
 OBSERVACIONES:     29 páginas. Índice: propósito de marca, filosofía, valores,
                    misión y visión, brand idea, tagline, slogan, paleta de
                    colores, porcentaje de uso, tipografía institucional,

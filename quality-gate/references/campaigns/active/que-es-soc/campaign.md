@@ -13,11 +13,12 @@ indicadas; cuando un dato no está definido en ellas, se registra como
 ¿Qué es SOC?
 
 **ESTADO:**
-ACTIVA — por iniciar.
-Confirmado por Dirección el 30/09/2026. Fecha de inicio no especificada.
+ACTIVA — inicia en noviembre de 2026.
+Confirmado por Dirección el 30/09/2026.
 
 **VIGENCIA:**
-No especificado.
+Noviembre 2026 – noviembre 2028: dos años. Día exacto de inicio y fin no
+especificado. *Fuente: Dirección, 30/09/2026.*
 
 **OBJETIVO:**
 Convertir la plataforma "¿Qué es SOC?" en contenido que construya marca,
@@ -106,19 +107,19 @@ Dependen del formato. Consultar la sección aplicable:
      el cierre).
    - El uso de "Juntos, lo hacemos real" como brand idea en piezas
      estáticas y como remate en video también responde al formato.
-2. **Brandbook SOC 2022.** REF-CAMP-002 cita el "Brandbook SOC 2022" y
-   páginas específicas (p.24-28). Por decisión de Dirección, el Manual de
-   Identidad SOC 2026 (REF-BRAND-001) es la actualización vigente: leer
-   esas citas contra REF-BRAND-001 y verificar la sección
-   equivalente, porque la numeración de páginas puede no coincidir.
+2. **Referencia de marca.** Toda cita a un documento de marca dentro de
+   REF-CAMP-002 se lee contra el Manual de Identidad SOC 2026
+   (REF-BRAND-001), única referencia de marca del sistema por decisión de
+   Dirección. Verificar la sección equivalente del Manual, porque las
+   páginas citadas pueden no coincidir.
 3. **Referencias internas del skill.** REF-CAMP-002 remite en algunos
    puntos a la "sección 11" y a "9.2" para el Sistema Visual; el
    contenido está en §12 y §12.2 del mismo documento.
 4. **Dependencia.** REF-CAMP-002 remite al "Skill de Posicionamiento SOC"
    para fundamentos de marca y checklist editorial. Ese documento no está
    registrado todavía en `/references`.
-5. **Pendiente de confirmar.** El fondo del cierre en video: REF-CAMP-001
-   indica logo "siempre sobre fondo negro o verde oscuro", mientras que
-   REF-CAMP-002 §12.3 describe un cartel de cierre con cintillo verde.
-   Ambos son video; confirmar si se complementan o si uno prevalece.
-   Mientras no se confirme, no generar FAIL por este punto.
+5. **Cierre de video (decisión de Dirección, 30/09/2026).** El cierre de
+   video va sobre **fondo verde SOC, con cintillo, logo y brand idea**.
+   Esta decisión prevalece sobre la indicación de REF-CAMP-001 de colocar
+   el logo "siempre sobre fondo negro o verde oscuro", y es consistente
+   con el cartel de cierre descrito en REF-CAMP-002 §12.3.
