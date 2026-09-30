@@ -41,6 +41,6 @@ se documenta con la plantilla de resultado.
 ## Estado
 
 - [x] Estructura creada
-- [ ] Proceso del Quality Gate
+- [x] Proceso del Quality Gate
 - [ ] Reglas por área
 - [ ] Plantillas
