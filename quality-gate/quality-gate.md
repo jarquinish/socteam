@@ -1,11 +1,23 @@
 # SOC QUALITY GATE
 
+> **CRITERIOS V1 — PROPUESTA DE DIRECCIÓN**
+> Estado: **PENDIENTE DE CALIBRACIÓN CON GERENTES.**
+> La validación se registra en
+> [`learning/manager-validation.md`](learning/manager-validation.md).
+> Podrá evolucionar a V1.1 con evidencia de uso real.
+
 ## Definición
 
 **SOC QUALITY GATE** es el sistema de control de calidad de la
 Dirección de Posicionamiento de SOC Asesores.
 
 Su función es revisar entregables antes de considerarlos terminados.
+
+Su objetivo es responder:
+
+> **¿Este entregable está realmente listo para avanzar?**
+
+No debe utilizar criterios subjetivos para bloquear una entrega.
 
 ## Alcance
 
@@ -32,13 +44,39 @@ o contexto que el equipo proporcione directamente.
 Si falta información, el Quality Gate continúa siempre que sea posible.
 Nunca se inventan los datos faltantes.
 
-### Fuentes de referencia
+### Fuente de verdad
 
-Cuando exista una fuente de referencia proporcionada (Brandbook, brief,
-manual, lineamiento, especificación), ésta tendrá **prioridad sobre
-supuestos generales**.
+Cuando existan **Brandbook, brief, manual, lineamiento, especificación o
+documento aprobado**, se utilizan antes que criterios generales y tienen
+prioridad sobre cualquier supuesto.
 
 El sistema debe **priorizar evidencia sobre opinión**.
+
+---
+
+## Regla de contexto
+
+No todos los criterios aplican a todos los entregables.
+
+Antes de evaluar:
+
+1. Identificar **gerencia**.
+2. Identificar **tipo de entregable**.
+3. Identificar **objetivo**.
+4. Identificar **audiencia**.
+5. Identificar **canal**.
+6. Identificar **requisitos obligatorios**.
+7. Identificar **fuentes de referencia** disponibles.
+8. Determinar **qué criterios aplican**.
+
+No penalizar criterios **N/A**.
+
+- **Canal:** evaluar siempre considerando dónde se utilizará el entregable.
+- **Audiencia:** evaluar siempre considerando para quién fue creado.
+- **Contexto:** el mismo criterio puede tener distinta importancia según
+  el entregable. La importancia definida en las reglas de cada gerencia
+  es la **importancia por defecto**; si el contexto justifica subirla o
+  bajarla, el reporte debe indicarlo y explicar por qué.
 
 ---
 
@@ -49,9 +87,10 @@ El sistema debe **priorizar evidencia sobre opinión**.
 3. **Identificar el tipo de entregable.**
 4. **Leer el brief disponible.**
 5. **Leer los requisitos obligatorios.**
-6. **Cargar las reglas de la gerencia correspondiente.**
+6. **Cargar las reglas de la gerencia correspondiente** y determinar qué
+   criterios aplican según la [Regla de contexto](#regla-de-contexto).
 7. **Analizar el entregable.**
-8. **Compararlo contra brief, objetivo, audiencia y requisitos.**
+8. **Compararlo contra brief, objetivo, audiencia, canal y requisitos.**
 9. **Clasificar cada criterio.**
 10. **Detectar problemas críticos.**
 11. **Determinar el resultado general.**
@@ -68,7 +107,7 @@ Cada criterio evaluado recibe una sola clasificación:
 
 | Clasificación      | Significado                                                                                     |
 | ------------------ | ----------------------------------------------------------------------------------------------- |
-| **PASS**           | Cumple correctamente: existe evidencia suficiente de cumplimiento.                              |
+| **PASS**           | Cumple: existe evidencia suficiente de cumplimiento.                                            |
 | **WARNING**        | Existe una oportunidad de mejora o riesgo menor, pero por sí solo no impide la entrega.         |
 | **FAIL**           | Existe evidencia concreta de incumplimiento.                                                    |
 | **NO VERIFICABLE** | No existe información o evidencia suficiente para determinarlo.                                 |
@@ -79,18 +118,39 @@ Cada criterio evaluado recibe una sola clasificación:
   de problemas visibles no basta cuando el criterio depende de una
   referencia o prueba que no se proporcionó.
 - Un **FAIL** requiere evidencia concreta. Sin evidencia no hay FAIL.
-- Nunca convertir automáticamente **NO VERIFICABLE** en **FAIL**.
+- Todo **FAIL** debe poder justificarse mediante evidencia relacionada con:
+  - brief;
+  - objetivo;
+  - audiencia;
+  - requisito explícito;
+  - Brandbook;
+  - especificación técnica;
+  - información proporcionada;
+  - estándar previamente definido.
+- **NO VERIFICABLE:** la ausencia de evidencia no demuestra
+  incumplimiento. Nunca convertir automáticamente NO VERIFICABLE en FAIL.
 - **NO VERIFICABLE** indica información faltante, no un error del
   responsable.
 
-### Criterios que no aplican
+### Criterios que no aplican (N/A)
 
-Cuando un criterio no corresponde al tipo de entregable o a la etapa del
-proyecto, se registra como **No aplica**: no recibe clasificación y no
-cuenta para el resultado general. No aplicar no es lo mismo que
-NO VERIFICABLE.
+Cuando un criterio no corresponde al tipo de entregable, a su canal o a la
+etapa del proyecto, su importancia es **N/A**: no recibe clasificación y no
+cuenta para el resultado general. N/A no es lo mismo que NO VERIFICABLE.
 
-### Criterios visuales o creativos
+### Exactitud
+
+La información incorrecta comprobable (nombres, fechas, cifras, precios,
+condiciones) tiene **mayor gravedad** que cualquier oportunidad estética.
+
+### Brief
+
+Un entregable no puede considerarse de calidad si resuelve perfectamente
+algo distinto a lo solicitado.
+
+### Subjetividad y criterios visuales o creativos
+
+Las preferencias personales no constituyen FAIL.
 
 En criterios visuales o creativos, una **preferencia estética no
 constituye un FAIL**, salvo que contradiga:
@@ -101,22 +161,24 @@ constituye un FAIL**, salvo que contradiga:
 - el objetivo;
 - un requisito explícito.
 
-Una preferencia que no contradice ninguna de estas referencias se
-registra como recomendación, nunca como error.
+"No me gusta" nunca es justificación suficiente. Una preferencia que no
+contradice ninguna de estas referencias se registra como recomendación,
+nunca como error.
 
 ---
 
 ## Importancia de los criterios
 
-Todo criterio debe poder clasificarse por su importancia:
+| Importancia    | Significado                                                                                          |
+| -------------- | ---------------------------------------------------------------------------------------------------- |
+| **CRÍTICO**    | Si falla, normalmente el entregable no debería avanzar.                                              |
+| **IMPORTANTE** | Debe corregirse o evaluarse según contexto, pero no siempre impide utilizar el entregable.           |
+| **DESEABLE**   | Eleva la calidad, pero no debe bloquear por sí solo.                                                 |
+| **N/A**        | No aplica al entregable evaluado.                                                                    |
 
-| Importancia    | Significado                                                                                  |
-| -------------- | -------------------------------------------------------------------------------------------- |
-| **CRÍTICO**    | Si falla, el entregable no puede considerarse terminado. Un FAIL puede determinar INCOMPLETO. |
-| **IMPORTANTE** | Afecta la calidad o efectividad. Debe corregirse antes de avanzar.                           |
-| **DESEABLE**   | Mejora el entregable, pero no bloquea por sí solo una entrega.                               |
-
-La importancia de cada criterio se define en las reglas de cada gerencia.
+La importancia por defecto de cada criterio se define en las reglas de
+cada gerencia y puede ajustarse por contexto (ver
+[Regla de contexto](#regla-de-contexto)).
 
 **Regla de escalamiento:** cualquier elemento indicado en
 **REQUISITOS OBLIGATORIOS** del Formulario de Entrega se evalúa como
@@ -127,11 +189,11 @@ reglas de la gerencia.
 
 ## Resultado general
 
-| Resultado            | Significado                                                                      |
-| -------------------- | -------------------------------------------------------------------------------- |
-| **APROBABLE**        | El entregable puede avanzar.                                                     |
-| **REQUIERE AJUSTES** | Existen correcciones que deben realizarse antes de avanzar.                      |
-| **INCOMPLETO**       | Existe un problema crítico que impide considerar terminado el entregable.        |
+| Resultado               | Significado                                                                                                                              |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 🟢 **APROBABLE**        | No existen incumplimientos que razonablemente impidan que el entregable avance. Puede contener WARNING.                                  |
+| 🟡 **REQUIERE AJUSTES** | Existen incumplimientos corregibles que deben atenderse antes de considerar terminada la entrega.                                        |
+| 🔴 **INCOMPLETO**       | Existe uno o más incumplimientos críticos que hacen que el entregable no pueda utilizarse correctamente o contradiga un requisito esencial. |
 
 ### Cómo se determina
 
@@ -153,31 +215,93 @@ No se calcula únicamente mediante promedios matemáticos.
 
 Claude siempre debe explicar la causa del resultado.
 
+### Principio de proporcionalidad
+
+No todos los FAIL críticos producen automáticamente INCOMPLETO sin
+considerar el contexto.
+
+Ejemplo: un error crítico completamente localizado y corregible en
+segundos (una fecha equivocada en un solo lugar) puede clasificarse como
+**REQUIERE AJUSTES**.
+
+La pregunta que decide el resultado es:
+
+> **¿EL ENTREGABLE PUEDE AVANZAR DE FORMA SEGURA Y CORRECTA?**
+
+Cuando se aplique proporcionalidad, el reporte debe explicar por qué el
+FAIL crítico no determina INCOMPLETO.
+
+---
+
+## Capa de excelencia
+
+No mezclar cumplimiento con excelencia.
+
+El Quality Gate determina si el entregable está listo. Además, puede
+registrar:
+
+> **EXCELENCIA / OPORTUNIDAD DE ELEVAR**
+
+para identificar piezas que cumplen correctamente, pero podrían mejorar
+significativamente.
+
+Esta capa **nunca** convierte automáticamente un PASS en FAIL, ni
+modifica el resultado general.
+
+---
+
+## Segunda revisión
+
+En una nueva versión, comparar contra la evaluación anterior y
+clasificar cada hallazgo:
+
+| Estado             | Significado                                   |
+| ------------------ | --------------------------------------------- |
+| **CORREGIDO**      | El hallazgo anterior ya no existe.            |
+| **PENDIENTE**      | El hallazgo anterior sigue presente.          |
+| **NUEVO HALLAZGO** | No existía en la evaluación anterior.         |
+
+No reiniciar innecesariamente toda la discusión. No volver a presentar
+como problema lo que ya fue solucionado.
+
 ---
 
 ## Origen de los problemas y retrabajo
 
-Cuando se identifica un problema o un retrabajo, se debe diferenciar su
-origen:
+No asumir automáticamente que una segunda versión representa un error
+del ejecutor.
 
-| Origen                 | Descripción                                                              |
-| ---------------------- | ------------------------------------------------------------------------ |
-| **EJECUCIÓN**          | El problema se generó al elaborar el entregable.                         |
-| **BRIEF**              | El brief era incompleto, ambiguo o contradictorio.                       |
-| **CAMBIO DE BRIEF**    | El brief se modificó después de iniciado el trabajo.                     |
-| **CAMBIO DE ALCANCE**  | Se agregaron o modificaron entregables, cantidades o requisitos.         |
-| **INFORMACIÓN**        | Faltó información, llegó tarde o era incorrecta.                         |
-| **APROBACIÓN**         | La aprobación fue tardía, contradictoria o cambió criterios previos.     |
-| **CAMBIO ESTRATÉGICO** | Cambió la estrategia, prioridad o dirección del proyecto.                |
-| **SOLICITANTE**        | El solicitante pidió cambios fuera de lo acordado.                       |
-| **DEPENDENCIA EXTERNA**| Proveedor, plataforma u otra área fuera del control del equipo.          |
-| **OTRO**               | Origen identificado que no corresponde a las categorías anteriores.      |
+### Tipo de retrabajo
+
+Clasificar cuando exista evidencia:
+
+| Tipo               | Significado                                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------------------- |
+| **EVITABLE**       | La información necesaria estaba disponible y el retrabajo pudo prevenirse dentro del proceso. No significa atribuible al responsable. |
+| **NO ATRIBUIBLE**  | Se originó en factores fuera del control del proceso.                                                         |
+| **NO DETERMINABLE**| La evidencia no permite clasificarlo.                                                                         |
+
+### Causas
+
+| Causa                      | Descripción                                                                  |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| **EJECUCIÓN**              | El problema se generó al elaborar el entregable.                             |
+| **BRIEF INCOMPLETO**       | El brief era incompleto, ambiguo o contradictorio.                           |
+| **CAMBIO DE BRIEF**        | El brief o el alcance se modificaron después de iniciado el trabajo.         |
+| **INFORMACIÓN INCORRECTA** | La información proporcionada era incorrecta.                                 |
+| **INFORMACIÓN FALTANTE**   | Faltó información o llegó tarde.                                             |
+| **APROBACIÓN**             | La aprobación fue tardía, contradictoria o cambió criterios previos.         |
+| **CAMBIO ESTRATÉGICO**     | Cambió la estrategia, prioridad o dirección del proyecto.                    |
+| **CAMBIO DEL SOLICITANTE** | El solicitante pidió cambios fuera de lo acordado.                           |
+| **DEPENDENCIA EXTERNA**    | Proveedor, plataforma u otra área fuera del control del equipo.              |
+| **OTRO**                   | Origen identificado que no corresponde a las categorías anteriores.          |
+| **NO DETERMINABLE**        | La evidencia no permite identificar la causa.                                |
 
 Reglas:
 
 - Nunca atribuir automáticamente un problema o retrabajo al responsable.
-- Toda atribución de origen requiere evidencia.
-- Ante evidencia insuficiente, el origen es **NO DETERMINABLE**.
+- Toda atribución de causa requiere evidencia.
+- Ante evidencia insuficiente: **NO DETERMINABLE**.
 
 **NO DETERMINABLE** se usa para el origen de problemas y el retrabajo.
 **NO VERIFICABLE** se usa para la clasificación de criterios.

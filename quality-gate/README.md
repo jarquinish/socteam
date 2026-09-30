@@ -36,6 +36,7 @@ se documenta con la plantilla de resultado.
 
   /learning                 Aprendizaje continuo del sistema
     corrections.md
+    manager-validation.md   Calibración de criterios con gerentes
 ```
 
 ## Estado
@@ -44,3 +45,5 @@ se documenta con la plantilla de resultado.
 - [x] Proceso del Quality Gate
 - [x] Reglas por área
 - [x] Plantillas
+- [x] Criterios V1 (propuesta de Dirección)
+- [ ] Calibración de criterios con gerentes

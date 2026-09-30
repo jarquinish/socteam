@@ -39,7 +39,10 @@ las otras dos:
 🟡 REQUIERE AJUSTES
 🔴 INCOMPLETO
 
-Debajo, explicar en una o dos líneas la causa del resultado. -->
+Debajo, explicar en una o dos líneas la causa del resultado.
+Si se aplicó el principio de proporcionalidad (un FAIL CRÍTICO que no
+determina INCOMPLETO), explicar por qué el entregable puede avanzar de
+forma segura y correcta tras la corrección. -->
 
 [🟢 APROBABLE | 🟡 REQUIERE AJUSTES | 🔴 INCOMPLETO]
 
@@ -63,11 +66,15 @@ Debajo, explicar en una o dos líneas la causa del resultado. -->
 
 <!-- Una fila por criterio de la gerencia correspondiente.
 
-Importancia permitida: CRÍTICO / IMPORTANTE / DESEABLE.
-Si un criterio es requisito obligatorio del formulario, su importancia
-es CRÍTICO (regla de escalamiento).
+Importancia permitida: CRÍTICO / IMPORTANTE / DESEABLE / N/A.
+Usar la importancia por defecto de las reglas de la gerencia. Si un
+criterio es requisito obligatorio del formulario, su importancia es
+CRÍTICO (regla de escalamiento). Si el contexto justifica otro ajuste,
+explicarlo en la columna de evidencia.
 
 Resultado permitido: PASS / WARNING / FAIL / NO VERIFICABLE.
+Los criterios con importancia N/A no reciben resultado: usar "—" y
+anotar brevemente por qué no aplican. No se penalizan.
 
 Evidencia / Observación: cita, ubicación y referencia contra la que se
 comparó. Todo FAIL debe tener evidencia concreta. -->
@@ -75,12 +82,7 @@ comparó. Todo FAIL debe tener evidencia concreta. -->
 | Criterio | Importancia | Resultado | Evidencia / Observación |
 |---|---|---|---|
 | [Criterio] | [CRÍTICO / IMPORTANTE / DESEABLE] | [PASS / WARNING / FAIL / NO VERIFICABLE] | [Evidencia] |
-
-<!-- Los criterios que no corresponden al tipo de entregable o a su etapa
-no se incluyen en la tabla: se listan aquí y no cuentan para el
-resultado. Si todos aplican, escribir "Todos los criterios aplican." -->
-
-**Criterios que no aplican:** [Criterio — motivo]
+| [Criterio] | N/A | — | [Motivo por el que no aplica] |
 
 ---
 
@@ -108,13 +110,29 @@ Si no existen, escribir: "Ninguna corrección obligatoria." -->
 ## RECOMENDAMOS MEJORAR
 
 <!-- Oportunidades de mejora que no bloquean la entrega: WARNING, FAIL en
-criterios DESEABLES y sugerencias.
+criterios DESEABLES y recomendaciones derivadas de preferencias que no
+contradicen ninguna referencia.
 
 No mezclarlas con errores. Cada recomendación debe explicar el
 beneficio concreto del cambio.
 Si no existen, escribir: "Sin recomendaciones adicionales." -->
 
 - **[Criterio]:** [Recomendación y beneficio concreto.]
+
+---
+
+## EXCELENCIA / OPORTUNIDAD DE ELEVAR
+
+<!-- Opcional. Para entregables que cumplen correctamente, pero podrían
+mejorar significativamente (por ejemplo, originalidad, sofisticación
+visual, capacidad persuasiva).
+
+Esta sección NO modifica el resultado general y nunca convierte un PASS
+en FAIL. No mezclarla con cumplimiento.
+Si no hay oportunidades relevantes, escribir: "Sin observaciones de
+excelencia." -->
+
+- [Oportunidad concreta y cómo elevaría el entregable.]
 
 ---
 
@@ -154,11 +172,12 @@ pudo prevenirse dentro del proceso. EVITABLE no significa atribuible
 al responsable: puede originarse en el brief, la aprobación o el
 solicitante.
 NO ATRIBUIBLE: se originó en factores fuera del control del proceso
-(cambio estratégico, dependencia externa, cambio de alcance posterior).
+(cambio estratégico, dependencia externa, cambio de brief o de alcance
+posterior).
 NO DETERMINABLE: la evidencia no permite clasificarlo.
 -->
 
-**Causa probable:** [EJECUCIÓN / BRIEF / CAMBIO DE BRIEF / CAMBIO DE ALCANCE / INFORMACIÓN / APROBACIÓN / CAMBIO ESTRATÉGICO / SOLICITANTE / DEPENDENCIA EXTERNA / OTRO]
+**Causa probable:** [EJECUCIÓN / BRIEF INCOMPLETO / CAMBIO DE BRIEF / INFORMACIÓN INCORRECTA / INFORMACIÓN FALTANTE / APROBACIÓN / CAMBIO ESTRATÉGICO / CAMBIO DEL SOLICITANTE / DEPENDENCIA EXTERNA / OTRO / NO DETERMINABLE]
 
 **Evidencia:** [Qué documentos, versiones o comunicaciones sustentan la clasificación.]
 
@@ -194,9 +213,10 @@ PENDIENTE: el hallazgo anterior sigue presente.
 NUEVO HALLAZGO: no existía en la evaluación anterior.
 
 No volver a presentar como problema lo que ya fue solucionado: los
-hallazgos CORREGIDOS no se repiten en DEBE CORREGIRSE.
+hallazgos CORREGIDOS no se repiten en DEBE CORREGIRSE. No reiniciar
+innecesariamente toda la discusión.
 
-Si es Primera entrega, escribir: "No aplica: primera entrega."
+Si es Primera entrega, escribir: "N/A: primera entrega."
 Si es versión posterior pero no se proporcionó la evaluación anterior,
 escribir: "No verificable: no se proporcionó la evaluación anterior." -->
 
