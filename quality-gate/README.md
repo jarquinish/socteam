@@ -56,4 +56,4 @@ se documenta con la plantilla de resultado.
 - [x] Criterios V1 (propuesta de Dirección)
 - [ ] Calibración de criterios con gerentes
 - [x] Arquitectura de referencias
-- [ ] Carga de las primeras referencias
+- [x] Carga de las primeras referencias (marca y campaña "¿Qué es SOC?")

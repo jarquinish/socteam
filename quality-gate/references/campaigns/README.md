@@ -88,4 +88,6 @@ OBSERVACIONES:
 
 ## Campañas registradas
 
-*Sin campañas registradas todavía.*
+| Campaña       | Carpeta                                      | Estado                 | Fuentes                     |
+| ------------- | -------------------------------------------- | ---------------------- | --------------------------- |
+| ¿Qué es SOC?  | [`active/que-es-soc/`](active/que-es-soc/campaign.md) | ACTIVA — por iniciar | REF-CAMP-001, REF-CAMP-002 |

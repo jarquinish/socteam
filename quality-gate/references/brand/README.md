@@ -66,4 +66,26 @@ Si algún dato no se conoce, escribir "No especificado". No inventarlo.
 
 ## Documentos registrados
 
-*Sin documentos registrados todavía.*
+> En SOC Quality Gate, toda mención a "Brandbook SOC" en reglas,
+> plantillas o referencias se refiere al documento de marca **VIGENTE**
+> de esta sección.
+
+```
+ID:                REF-BRAND-001
+NOMBRE:            Manual de Identidad SOC 2026
+VERSIÓN:           2026 (número de versión no especificado en el documento)
+FECHA:             No especificada en el documento (PDF generado el 11/09/2026)
+ESTADO:            VIGENTE (confirmado por Dirección el 30/09/2026)
+FUENTE:            Proporcionado por Dirección en la sesión de implementación de Quality Gate
+PROPIETARIO:       No especificado
+ARCHIVO:           Manual_de_Identidad_SOC_2026.pdf
+REEMPLAZA A:       Brandbook SOC 2022 (no incorporado a /references ni a /archive, por decisión de Dirección)
+OBSERVACIONES:     29 páginas. Índice: propósito de marca, filosofía, valores,
+                   misión y visión, brand idea, tagline, slogan, paleta de
+                   colores, porcentaje de uso, tipografía institucional,
+                   logotipo, áreas de protección, variables de aplicación,
+                   marca compartida, uso de nombre, sinergia, tamaños mínimos,
+                   usos incorrectos, elementos de marca, uso de imágenes.
+                   Algunas páginas contienen texto en imagen: al citarlas,
+                   verificar visualmente la página.
+```

@@ -47,7 +47,9 @@ referencia se archive.
 
 | ID | Referencia | Categoría | Versión | Vigencia | Prioridad | Estado | Aplicación |
 |---|---|---|---|---|---|---|---|
-| — | *Sin referencias registradas todavía.* | — | — | — | — | — | — |
+| REF-BRAND-001 | Manual de Identidad SOC 2026 — [`brand/Manual_de_Identidad_SOC_2026.pdf`](brand/Manual_de_Identidad_SOC_2026.pdf) | Brand | 2026 (número de versión no especificado) | Vigente, confirmado por Dirección el 30/09/2026. Fin de vigencia no especificado. | 2 | VIGENTE | Todas las gerencias, cuando el entregable usa la marca SOC. Es la actualización del Brandbook SOC 2022, que no se incorpora. |
+| REF-CAMP-001 | Guiones de Edición 2026 — Campaña "¿Qué es SOC?" — [`campaigns/active/que-es-soc/assets/SOC_Guiones_Edicion_FINAL_2.pdf`](campaigns/active/que-es-soc/assets/SOC_Guiones_Edicion_FINAL_2.pdf) | Campaña | "Versión aprobada" 2026 (archivo FINAL_2) | Campaña por iniciar. Fechas no especificadas. | 3 | VIGENTE | Edición de video de la campaña "¿Qué es SOC?": 15 guiones, 5 audiencias, 4 canales. Contenido, Diseño, Marketing Digital. |
+| REF-CAMP-002 | Skill completo de campaña "¿Qué es SOC?" (`soc-mensaje-por-etapa`) — [`campaigns/active/que-es-soc/assets/skill-soc-mensaje-por-etapa.md`](campaigns/active/que-es-soc/assets/skill-soc-mensaje-por-etapa.md) | Campaña | No especificado. Idéntico al skill instalado `soc-mensaje-por-etapa` (verificado el 30/09/2026). | Campaña por iniciar. Fechas no especificadas. | 3 | VIGENTE | Piezas de la campaña "¿Qué es SOC?" en cualquier red y formato: copy, sistema visual, audiencias, etapas y canales. Contenido, Diseño, Marketing Digital. |
 
 ---
 
@@ -56,3 +58,4 @@ referencia se archive.
 | Fecha | Cambio | ID afectado | Responsable |
 |---|---|---|---|
 | — | Índice creado sin referencias. | — | — |
+| 30/09/2026 | Registro inicial de referencias, autorizado por Dirección. | REF-BRAND-001, REF-CAMP-001, REF-CAMP-002 | Dirección de Posicionamiento |
