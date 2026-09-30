@@ -58,7 +58,7 @@ export function Dependencies() {
         </select>
       </header>
 
-      <div className="grid-2" style={{ gridTemplateColumns: '1fr 1fr' }}>
+      <div className="grid-2 even">
         <section className="card card-pad">
           <div className="section-title"><h2>¿A quién estamos esperando?</h2></div>
           {top.length === 0 && <div className="muted">Sin dependencias abiertas.</div>}

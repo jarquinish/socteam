@@ -152,7 +152,7 @@ function TopBar({ session, onPhase, onList, onExit, onClose }: {
       </nav>
       <span className="spacer" />
       <span className={`pill ${st.blockers.followUp ? 'alert' : ''}`}><Icon name="lock" size={13} /> {st.blockers.followUp} bloqueos abiertos</span>
-      <button className="btn btn-sm" onClick={onList}><Icon name="checks" size={15} /> Compromisos · {created} nuevos</button>
+      <button className="btn btn-sm" onClick={onList}><Icon name="checks" size={15} /> Compromisos · {created} {created === 1 ? 'nuevo' : 'nuevos'}</button>
       <button className="btn btn-sm" onClick={onExit}><Icon name="logout" size={15} /> Salir</button>
       <button className="btn btn-sm btn-primary" onClick={onClose}><Icon name="stop" size={13} /> Cerrar Weekly</button>
     </header>
@@ -222,7 +222,7 @@ function ReviewStep({ session, onContinue }: { session: Session; onContinue: () 
         {r ? (
           <div className="row">
             <span className={`badge st-${r === 'si' ? 'cumplido' : r === 'no' ? 'vencido' : r === 'reprogramar' ? 'reprogramado' : 'escalado'}`}>{RESULT_LABEL[r]}</span>
-            {r !== 'si' && <CommitmentBadge status={st} />}
+            {r === 'no' && <CommitmentBadge status={st} />}
           </div>
         ) : null}
         <div className="review-q">
@@ -675,7 +675,7 @@ function SummaryScreen({ session }: { session: Session }) {
         <div className="row-wrap" style={{ alignItems: 'flex-end' }}>
           <div className="grow">
             <div className="upper" style={{ color: 'var(--soc)' }}>Resumen de acuerdos</div>
-            <h1 style={{ marginTop: 6 }}>{k.commitments.created} compromisos nuevos · {k.blockers.followUp} bloqueos en seguimiento</h1>
+            <h1 style={{ marginTop: 6 }}>{k.commitments.created} {k.commitments.created === 1 ? 'compromiso nuevo' : 'compromisos nuevos'} · {k.blockers.followUp} {k.blockers.followUp === 1 ? 'bloqueo' : 'bloqueos'} en seguimiento</h1>
             {k.warnings.length > 0 && <p className="muted" style={{ marginTop: 4 }}>{k.warnings.length} puntos quedaron por definir (incluidos en el resumen).</p>}
             {pendingOverdue > 0 && <p className="muted">{pendingOverdue} compromisos vencidos siguen abiertos.</p>}
           </div>

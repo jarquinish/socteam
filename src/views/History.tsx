@@ -40,14 +40,14 @@ export function History() {
           <thead>
             <tr>
               <th>Fecha</th>
-              <th>Semana</th>
-              <th className="num">Proyectos revisados</th>
+              <th className="hide-md">Semana</th>
+              <th className="num">Revisados</th>
               <th className="num">Bloqueos</th>
               <th className="num">Resueltos</th>
-              <th className="num">Compromisos</th>
+              <th className="num">Nuevos comp.</th>
               <th className="num">Cumplidos</th>
               <th className="num">Vencidos</th>
-              <th className="num">Reprogramados</th>
+              <th className="num">Reprog.</th>
               <th />
             </tr>
           </thead>
@@ -57,7 +57,7 @@ export function History() {
               return (
                 <tr key={s.id}>
                   <td data-label="Fecha" className="cell-title nowrap">{fmtLongDay(s.date)}</td>
-                  <td data-label="Semana" className="nowrap muted">{fmtWeekRange(s.weekStart)}</td>
+                  <td data-label="Semana" className="muted hide-md">{fmtWeekRange(s.weekStart)}</td>
                   <td data-label="Revisados" className="num">{k?.projects.reviewed ?? '—'}</td>
                   <td data-label="Bloqueos" className="num">{k?.blockers.detected ?? '—'}</td>
                   <td data-label="Resueltos" className="num">{k?.blockers.resolved ?? '—'}</td>

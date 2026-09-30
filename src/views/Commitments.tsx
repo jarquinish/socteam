@@ -99,12 +99,10 @@ export function Commitments({ params }: { params: URLSearchParams }) {
           <thead>
             <tr>
               <th>Compromiso</th>
-              <th>Proyecto</th>
-              <th>Área</th>
+              <th>Proyecto · Área</th>
               <th>Responsable</th>
-              <th>Dependencia</th>
-              <th>Fecha</th>
-              <th>Hora</th>
+              <th className="hide-lg">Dependencia</th>
+              <th>Fecha · Hora</th>
               <th>Estado</th>
               <th style={{ textAlign: 'right' }}>Acciones</th>
             </tr>
@@ -115,33 +113,39 @@ export function Commitments({ params }: { params: URLSearchParams }) {
               const open = isOpen(c);
               return (
                 <tr key={c.id} className={st === 'vencido' ? 'is-overdue' : ''}>
-                  <td data-label="Compromiso" style={{ maxWidth: 320 }}>
+                  <td data-label="Compromiso" style={{ minWidth: 190, maxWidth: 300 }}>
                     <button className="link-btn" onClick={() => actions.commitmentDetail(c.id)}>
                       <div className="cell-title">{c.action}</div>
+                      {c.dependsOn && <div className="cell-sub show-lg">Depende de: {c.dependsOn.label}</div>}
                       {c.comments.length > 0 && (
-                        <div className="cell-sub row" style={{ gap: 4 }}><Icon name="message" size={12} /> {c.comments[c.comments.length - 1].text}</div>
+                        <div className="cell-sub clamp">{c.comments[c.comments.length - 1].text}</div>
                       )}
                     </button>
                   </td>
-                  <td data-label="Proyecto">{byId(data.projects, c.projectId)?.name ?? <span className="faint">—</span>}</td>
-                  <td data-label="Área"><AreaTag area={projectArea(data, c.projectId)} /></td>
+                  <td data-label="Proyecto" style={{ maxWidth: 190 }}>
+                    <div>{byId(data.projects, c.projectId)?.name ?? <span className="faint">Sin proyecto</span>}</div>
+                    <div className="cell-sub"><AreaTag area={projectArea(data, c.projectId)} /></div>
+                  </td>
                   <td data-label="Responsable" className="nowrap">{personName(data, c.ownerId) || <span style={{ color: 'var(--coral-ink)' }}>Sin responsable</span>}</td>
-                  <td data-label="Dependencia">{c.dependsOn?.label ?? <span className="faint">—</span>}</td>
+                  <td data-label="Dependencia" className="hide-lg" style={{ maxWidth: 150 }}>{c.dependsOn?.label ?? <span className="faint">—</span>}</td>
                   <td data-label="Fecha" className="nowrap">
-                    {c.dueDate ? fmtDayShort(c.dueDate) : <span style={{ color: 'var(--coral-ink)' }}>Sin fecha</span>}
+                    <div className="strong">
+                      {c.dueDate ? fmtDayShort(c.dueDate) : <span style={{ color: 'var(--coral-ink)' }}>Sin fecha</span>}
+                      {' · '}
+                      {c.dueTime ?? <span style={{ color: 'var(--coral-ink)' }}>Sin hora</span>}
+                    </div>
                     {c.reschedules.length > 0 && c.originalDueDate && (
                       <div className="cell-sub" title={`Reprogramado ${c.reschedules.length} ${c.reschedules.length === 1 ? 'vez' : 'veces'}`}>
                         orig. {fmtDayShort(c.originalDueDate)} · ×{c.reschedules.length}
                       </div>
                     )}
                   </td>
-                  <td data-label="Hora" className="nowrap">{c.dueTime ?? <span style={{ color: 'var(--coral-ink)' }}>Sin hora</span>}</td>
                   <td data-label="Estado"><CommitmentBadge status={st} /></td>
                   <td>
                     <div className="actions">
                       {open ? (
                         <>
-                          <button className="btn btn-xs" onClick={() => actions.complete(c.id)} title="Cumplido"><Icon name="check" size={14} /> Cumplido</button>
+                          <button className="btn btn-xs" onClick={() => actions.complete(c.id)} title="Cumplido"><Icon name="check" size={14} /> <span className="hide-md">Cumplido</span></button>
                           <button className="btn btn-ghost btn-xs btn-icon" onClick={() => actions.reschedule(c.id)} title="Reprogramar"><Icon name="reschedule" size={15} /></button>
                           <button className="btn btn-ghost btn-xs btn-icon" onClick={() => actions.escalate(c.id)} title="Escalar"><Icon name="escalate" size={15} /></button>
                         </>

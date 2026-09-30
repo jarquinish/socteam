@@ -128,15 +128,11 @@ export function Projects({ params }: { params: URLSearchParams }) {
           <thead>
             <tr>
               <th>Proyecto</th>
-              <th>Área</th>
-              <th>Responsable</th>
-              <th className="num" title="Impacto">Imp.</th>
-              <th className="num" title="Urgencia">Urg.</th>
-              <th className="num" title="Dependencia">Dep.</th>
-              <th className="num">Score</th>
-              <th>Prioridad</th>
+              <th>Área · Responsable</th>
+              <th className="num hide-md" title="Impacto · Urgencia · Dependencia">Imp · Urg · Dep</th>
+              <th>Score · Prioridad</th>
               <th>Estado</th>
-              <th>Fecha objetivo</th>
+              <th>Objetivo</th>
               <th />
             </tr>
           </thead>
@@ -145,19 +141,22 @@ export function Projects({ params }: { params: URLSearchParams }) {
               const blockers = openBlockersOf(data, p.id);
               return (
                 <tr key={p.id} className={p.archived ? 'is-archived' : ''}>
-                  <td data-label="Proyecto">
+                  <td data-label="Proyecto" className="col-main">
                     <button className="link-btn" onClick={() => actions.editProject(p.id)}>
                       <div className="cell-title">{p.name}</div>
-                      {blockers[0] && <div className="cell-sub" style={{ color: 'var(--coral-ink)' }}>{blockers[0].description}</div>}
+                      {blockers[0] && <div className="cell-sub clamp" style={{ color: 'var(--coral-ink)' }} title={blockers[0].description}>{blockers[0].description}</div>}
                     </button>
                   </td>
-                  <td data-label="Área"><AreaTag area={byId(data.areas, p.areaId)} /></td>
-                  <td data-label="Responsable" className="nowrap">{personName(data, p.ownerId) || <span className="faint">—</span>}</td>
-                  <td data-label="Impacto" className="num">{p.impact}</td>
-                  <td data-label="Urgencia" className="num">{p.urgency}</td>
-                  <td data-label="Dependencia" className="num">{p.dependency}</td>
-                  <td data-label="Score" className="num"><Score project={p} /></td>
-                  <td data-label="Prioridad"><ProjectPriority project={p} /></td>
+                  <td data-label="Área">
+                    <AreaTag area={byId(data.areas, p.areaId)} />
+                    <div className="cell-sub nowrap">{personName(data, p.ownerId) || '—'}</div>
+                  </td>
+                  <td data-label="Imp · Urg · Dep" className="num nowrap criteria hide-md" title={`Impacto ${p.impact} · Urgencia ${p.urgency} · Dependencia ${p.dependency}`}>
+                    <b>{p.impact}</b><i>·</i><b>{p.urgency}</b><i>·</i><b>{p.dependency}</b>
+                  </td>
+                  <td data-label="Prioridad">
+                    <div className="row" style={{ gap: 8 }}><Score project={p} /><ProjectPriority project={p} /></div>
+                  </td>
                   <td data-label="Estado">
                     <select
                       className={`status-select st-${p.status}`}

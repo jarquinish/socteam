@@ -87,7 +87,7 @@ export function Blockers({ params }: { params: URLSearchParams }) {
         <div className="titles">
           <div className="eyebrow">¿Qué está atorado?</div>
           <h1>Centro de bloqueos</h1>
-          <p>{openCount} abiertos{overdueCount ? ` · ${overdueCount} vencidos` : ''}. Arrastra las tarjetas para cambiar su estado.</p>
+          <p>{openCount} {openCount === 1 ? 'abierto' : 'abiertos'}{overdueCount ? ` · ${overdueCount} ${overdueCount === 1 ? 'vencido' : 'vencidos'}` : ''}. Arrastra las tarjetas para cambiar su estado.</p>
         </div>
         <select className="select" value={area} onChange={(e) => setParams('/bloqueos', { area: e.target.value || undefined })}>
           <option value="">Todas las áreas</option>

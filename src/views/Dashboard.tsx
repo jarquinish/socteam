@@ -29,7 +29,10 @@ export function Dashboard() {
 
   const stuckP1 = sortProjects(activeProjects(data).filter((p) => isProjectStuck(p) && effectivePriority(p) === 'P1'));
   const overdue = sortByDue(data.commitments.filter((c) => isOverdue(c, now)));
-  const unmanaged = data.blockers.filter((b) => b.column !== 'resuelto' && !isBlockerActionable(data, b) && !byId(data.projects, b.projectId)?.archived);
+  const unmanagedAll = data.blockers.filter((b) => b.column !== 'resuelto' && !isBlockerActionable(data, b) && !byId(data.projects, b.projectId)?.archived);
+  const stuckIds = new Set(stuckP1.map((p) => p.id));
+  const unmanaged = unmanagedAll.filter((b) => !stuckIds.has(b.projectId));
+  const noCommitment = new Set(unmanagedAll.map((b) => b.projectId));
   const horizon = addDays(now, 7).getTime();
   const upcoming = sortByDue(
     data.commitments.filter((c) => isOpen(c) && !isOverdue(c, now) && isActionable(c) && commitmentDueTime(c) <= horizon),
@@ -108,11 +111,14 @@ export function Dashboard() {
               );
             })}
             {stuckP1.map((p) => (
-              <button key={p.id} className="list-item as-btn" onClick={() => actions.editProject(p.id)}>
+              <button key={p.id} className="list-item as-btn" onClick={() => { const b = data.blockers.find((x) => x.projectId === p.id && x.column !== 'resuelto'); if (b) actions.blockerDetail(b.id); else actions.editProject(p.id); }}>
                 <ProjectStatusBadge status={p.status} />
                 <div className="grow">
                   <div className="t">{p.name}</div>
-                  <div className="s"><AreaTag area={byId(data.areas, p.areaId)} /> · {personName(data, p.ownerId)}</div>
+                  <div className="s">
+                    <AreaTag area={byId(data.areas, p.areaId)} /> · {personName(data, p.ownerId)}
+                    {noCommitment.has(p.id) && <span style={{ color: 'var(--amber-ink)', fontWeight: 600 }}> · Sin compromiso accionable</span>}
+                  </div>
                 </div>
                 <ProjectPriority project={p} />
               </button>
