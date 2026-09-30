@@ -43,4 +43,4 @@ se documenta con la plantilla de resultado.
 - [x] Estructura creada
 - [x] Proceso del Quality Gate
 - [x] Reglas por área
-- [ ] Plantillas
+- [x] Plantillas
