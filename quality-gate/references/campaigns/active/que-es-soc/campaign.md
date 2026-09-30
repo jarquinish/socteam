@@ -123,3 +123,7 @@ Dependen del formato. Consultar la sección aplicable:
    Esta decisión prevalece sobre la indicación de REF-CAMP-001 de colocar
    el logo "siempre sobre fondo negro o verde oscuro", y es consistente
    con el cartel de cierre descrito en REF-CAMP-002 §12.3.
+6. **Terminología (decisión de Dirección, 30/09/2026).** En sustitución de
+   "broker", "franquiciatario" o "consultor", usar "asesor financiero" o
+   "Líder" según el contexto, como indica REF-CAMP-001. Ver
+   [decisiones de Dirección](../../../corporate/README.md#decisiones-de-dirección).

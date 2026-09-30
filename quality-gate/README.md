@@ -41,6 +41,8 @@ se documenta con la plantilla de resultado.
     /approved-examples
 
   /history                  Registro de revisiones realizadas
+    README.md               Convención de IDs, nombres y uso
+    history-index.md        Índice de revisiones
 
   /learning                 Aprendizaje continuo del sistema
     corrections.md
@@ -56,4 +58,6 @@ se documenta con la plantilla de resultado.
 - [x] Criterios V1 (propuesta de Dirección)
 - [ ] Calibración de criterios con gerentes
 - [x] Arquitectura de referencias
-- [x] Carga de las primeras referencias (marca y campaña "¿Qué es SOC?")
+- [x] Carga de las primeras referencias (marca, campaña "¿Qué es SOC?" y SOC TEAM)
+- [x] Historial y registro de correcciones
+- [ ] Prueba piloto con entregas reales

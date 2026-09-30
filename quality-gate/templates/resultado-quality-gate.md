@@ -20,6 +20,10 @@ Instrucciones de uso (no forman parte del reporte):
 <!-- Tomar los datos del Formulario de Entrega. Si un dato no fue
 proporcionado, escribir "No proporcionado". Nunca inventarlo. -->
 
+**ID de revisión:** [QG-AAAA-NNNN]
+**Revisión anterior:** [QG-AAAA-NNNN / "—" si es la primera]
+**Criterios aplicados:** [V1]
+
 **Proyecto:** [Proyecto]
 **Gerencia:** [Contenido / Diseño / Marketing Digital / SOC Store]
 **Responsable:** [Nombre]

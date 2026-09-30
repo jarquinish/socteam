@@ -67,6 +67,18 @@ VIGENCIA:                Vigente. Sus datos CURRENT y PERFORMANCE deben
   (40/30/20/10), su roster y sus datos de desempeño individual no forman
   parte de la evaluación de entregables. Ver el principio de
   [`quality-gate.md`](../../quality-gate.md#principio).
-- Su sección §8 describe un Quality Gate de cuatro niveles (Brand,
-  Quality, Strategy, Performance). La relación con este sistema está
-  pendiente de definir por Dirección.
+- **Relación con este sistema:** su sección §8 describe cuatro filtros
+  (Brand, Quality, Strategy, Performance). Este sistema es únicamente la
+  parte de calidad de ese modelo (decisión de Dirección, 30/09/2026).
+
+---
+
+## Decisiones de Dirección
+
+Decisiones que resuelven diferencias entre referencias y aplican a todas
+las gerencias.
+
+| Fecha      | Tema | Decisión | Fuentes involucradas |
+|---|---|---|---|
+| 30/09/2026 | Terminología para sustituir "broker", "franquiciatario" y "consultor". | Usar **"asesor financiero"** o **"Líder"** según el contexto, como indican los guiones de edición. Esta regla prevalece sobre las formulaciones de REF-CORP-001 §13 ("asesores") y REF-CAMP-002 §3 ("Líder"). | REF-CAMP-001, REF-CAMP-002, REF-CORP-001 |
+| 30/09/2026 | Relación con el Quality Gate de SOC TEAM. | SOC Quality Gate es únicamente la parte de calidad del modelo de cuatro filtros de REF-CORP-001 §8. | REF-CORP-001 |

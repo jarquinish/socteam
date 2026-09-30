@@ -19,6 +19,20 @@ Su objetivo es responder:
 
 No debe utilizar criterios subjetivos para bloquear una entrega.
 
+### Relación con SOC TEAM
+
+SOC TEAM (REF-CORP-001, §8) define cuatro filtros para todo entregable
+relevante: Brand Gate, Quality Gate, Strategy Gate y Performance Gate.
+
+**Este sistema es únicamente la parte de calidad (Quality Gate) de ese
+modelo** (decisión de Dirección, 30/09/2026).
+
+- Revisa marca, brief, objetivo y audiencia **como criterios de calidad
+  del entregable**, sin sustituir el Brand Gate, el Strategy Gate ni el
+  Performance Gate de SOC TEAM.
+- El performance posterior no se evalúa aquí (ver
+  [Marketing Digital — Performance](rules/marketing-digital.md#performance)).
+
 ## Alcance
 
 Opera sobre cuatro gerencias:
@@ -178,6 +192,9 @@ como **PENDIENTE DE CLASIFICACIÓN** (ver
 13. **Analizar retrabajo cuando corresponda.**
 14. **Generar el reporte utilizando la plantilla oficial:**
     [`templates/resultado-quality-gate.md`](templates/resultado-quality-gate.md)
+15. **Registrar la revisión** en [`/history`](history/README.md) y, si se
+    detecta un error del sistema, en
+    [`learning/corrections.md`](learning/corrections.md).
 
 ---
 
@@ -394,6 +411,26 @@ Reglas:
 
 El resultado debe utilizar siempre la plantilla oficial:
 [`/quality-gate/templates/resultado-quality-gate.md`](templates/resultado-quality-gate.md)
+
+---
+
+## Registro y aprendizaje
+
+| Archivo | Función |
+|---|---|
+| [`history/`](history/README.md) | Conserva cada reporte emitido con un ID `QG-AAAA-NNNN`, sin editarlo después. Es la base de la segunda revisión. |
+| [`learning/corrections.md`](learning/corrections.md) | Registra los errores del sistema (falsos FAIL, criterios mal aplicados, referencias faltantes) y las acciones que se derivan de ellos. |
+| [`learning/manager-validation.md`](learning/manager-validation.md) | Registra la calibración de criterios con cada gerente. |
+
+Reglas:
+
+- Un dictamen emitido no se corrige editándolo. Se registra la corrección
+  y, si procede, se emite una nueva revisión.
+- Las correcciones no modifican las reglas automáticamente: requieren
+  aprobación de Dirección y se registran en el control de versiones de
+  criterios.
+- El historial se usa para mejorar el sistema, no para evaluar el
+  desempeño individual de nadie.
 
 ---
 

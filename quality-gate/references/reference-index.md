@@ -62,3 +62,4 @@ referencia se archive.
 | 30/09/2026 | Registro inicial de referencias, autorizado por Dirección. | REF-BRAND-001, REF-CAMP-001, REF-CAMP-002 | Dirección de Posicionamiento |
 | 30/09/2026 | Versión del Manual (octubre 2026) y vigencia de la campaña (noviembre 2026, dos años) confirmadas por Dirección. | REF-BRAND-001, REF-CAMP-001, REF-CAMP-002 | Dirección de Posicionamiento |
 | 30/09/2026 | Alta de SOC TEAM como referencia corporativa, solicitada por Dirección. | REF-CORP-001 | Dirección de Posicionamiento |
+| 30/09/2026 | Decisiones de Dirección sobre terminología y sobre la relación con el Quality Gate de SOC TEAM (ver `corporate/README.md`). | REF-CAMP-001, REF-CAMP-002, REF-CORP-001 | Dirección de Posicionamiento |
