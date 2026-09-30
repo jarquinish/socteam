@@ -50,7 +50,33 @@ Cuando existan **Brandbook, brief, manual, lineamiento, especificación o
 documento aprobado**, se utilizan antes que criterios generales y tienen
 prioridad sobre cualquier supuesto.
 
+Cuando exista una **referencia oficial aplicable**, SOC Quality Gate debe
+utilizarla antes de aplicar criterios generales o inferencias.
+
 El sistema debe **priorizar evidencia sobre opinión**.
+
+Las referencias se almacenan en [`/references`](references/README.md):
+`/rules` define **qué** evaluar; `/references` define **contra qué**
+evaluarlo. El orden de prioridad entre fuentes y el manejo de
+contradicciones se definen en
+[`references/source-priority.md`](references/source-priority.md).
+
+### Tipos de evidencia
+
+Cada evaluación debe distinguir el tipo de evidencia que la sustenta:
+
+| Tipo                        | Significado                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------- |
+| **EVIDENCIA DOCUMENTAL**    | Existe una fuente oficial que respalda la evaluación.                                          |
+| **EVIDENCIA DEL BRIEF**     | El requisito aparece explícitamente en el brief.                                               |
+| **EVIDENCIA DEL ENTREGABLE**| El hallazgo puede comprobarse directamente en el archivo.                                      |
+| **CRITERIO PROFESIONAL**    | No existe una regla documental explícita, pero puede realizarse una evaluación profesional razonada. |
+| **PREFERENCIA**             | Opinión estética o personal sin respaldo suficiente.                                           |
+
+- Una **PREFERENCIA** nunca produce por sí sola un FAIL.
+- Un hallazgo basado en **CRITERIO PROFESIONAL** debe explicar su
+  razonamiento y vincularse con objetivo, audiencia, canal o requisito.
+  Si no puede vincularse, es una PREFERENCIA.
 
 ---
 
@@ -66,7 +92,8 @@ Antes de evaluar:
 4. Identificar **audiencia**.
 5. Identificar **canal**.
 6. Identificar **requisitos obligatorios**.
-7. Identificar **fuentes de referencia** disponibles.
+7. Identificar **fuentes de referencia** disponibles (ver
+   [Protocolo de consulta de referencias](#protocolo-de-consulta-de-referencias)).
 8. Determinar **qué criterios aplican**.
 
 No penalizar criterios **N/A**.
@@ -80,6 +107,57 @@ No penalizar criterios **N/A**.
 
 ---
 
+## Protocolo de consulta de referencias
+
+Antes de evaluar un entregable:
+
+| Paso  | Acción                                                                                       |
+| ----- | -------------------------------------------------------------------------------------------- |
+| **A** | Identificar qué referencias podrían aplicar (marca, campaña, área, corporativo, ejemplos).    |
+| **B** | Consultar [`references/reference-index.md`](references/reference-index.md).                 |
+| **C** | Cargar **sólo** las referencias relevantes para el entregable.                              |
+| **D** | Evaluar el entregable contra ellas, respetando la [jerarquía de fuentes](references/source-priority.md). |
+| **E** | Citar en el reporte la referencia utilizada.                                                |
+
+No cargar indiscriminadamente toda la biblioteca si no es necesaria para
+el entregable.
+
+Cada hallazgo basado en una referencia debe poder indicar:
+
+```
+FUENTE:              [ID de referencia]
+REGLA / REQUISITO:   [qué exige]
+EVIDENCIA:           [qué se encontró]
+RESULTADO:           PASS / WARNING / FAIL / NO VERIFICABLE
+```
+
+### Vigencia de las referencias
+
+| Estado                         | Uso                                                                              |
+| ------------------------------ | -------------------------------------------------------------------------------- |
+| **VIGENTE**                    | Puede generar reglas obligatorias automáticamente.                               |
+| **ARCHIVADO**                  | Sólo contexto histórico; no bloquea una entrega actual.                          |
+| **PENDIENTE DE VALIDACIÓN**    | Puede orientar, pero no genera por sí sola un FAIL.                              |
+| **PENDIENTE DE CLASIFICACIÓN** | No se utiliza para evaluar hasta clasificarse.                                   |
+
+### Conflicto de fuentes
+
+Cuando dos referencias se contradicen y la
+[jerarquía de fuentes](references/source-priority.md#manejo-de-conflictos)
+no lo resuelve, marcar **CONFLICTO DE FUENTES** en el reporte, clasificar
+el criterio afectado como **NO VERIFICABLE** y no generar FAIL contra el
+responsable.
+
+### Referencias nuevas
+
+Cuando el equipo proporcione una nueva referencia, no asumir que
+sustituye a otra. Determinar qué es, qué área afecta, versión, vigencia,
+alcance y si reemplaza otro documento. Si no puede determinarse, marcarla
+como **PENDIENTE DE CLASIFICACIÓN** (ver
+[`references/README.md`](references/README.md#cómo-incorporar-una-nueva-referencia)).
+
+---
+
 ## Flujo
 
 1. **Recibir archivos y contexto.**
@@ -89,6 +167,8 @@ No penalizar criterios **N/A**.
 5. **Leer los requisitos obligatorios.**
 6. **Cargar las reglas de la gerencia correspondiente** y determinar qué
    criterios aplican según la [Regla de contexto](#regla-de-contexto).
+   Consultar las referencias aplicables según el
+   [Protocolo de consulta](#protocolo-de-consulta-de-referencias).
 7. **Analizar el entregable.**
 8. **Compararlo contra brief, objetivo, audiencia, canal y requisitos.**
 9. **Clasificar cada criterio.**
@@ -131,6 +211,8 @@ Cada criterio evaluado recibe una sola clasificación:
   incumplimiento. Nunca convertir automáticamente NO VERIFICABLE en FAIL.
 - **NO VERIFICABLE** indica información faltante, no un error del
   responsable.
+- Un criterio afectado por un **CONFLICTO DE FUENTES** es
+  **NO VERIFICABLE** hasta que el conflicto se resuelva.
 
 ### Criterios que no aplican (N/A)
 

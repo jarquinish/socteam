@@ -77,7 +77,8 @@ Los criterios con importancia N/A no reciben resultado: usar "—" y
 anotar brevemente por qué no aplican. No se penalizan.
 
 Evidencia / Observación: cita, ubicación y referencia contra la que se
-comparó. Todo FAIL debe tener evidencia concreta. -->
+comparó. Todo FAIL debe tener evidencia concreta. Cuando el hallazgo se
+base en una referencia, indicar "FUENTE: REF-XXXX-000". -->
 
 | Criterio | Importancia | Resultado | Evidencia / Observación |
 |---|---|---|---|
@@ -92,6 +93,7 @@ comparó. Todo FAIL debe tener evidencia concreta. -->
 aprobación: FAIL en criterios CRÍTICOS o IMPORTANTES.
 
 No incluir preferencias subjetivas, WARNING ni NO VERIFICABLE.
+Una PREFERENCIA nunca es un incumplimiento.
 Un FAIL en un criterio DESEABLE no bloquea por sí solo: se registra en
 RECOMENDAMOS MEJORAR.
 
@@ -101,7 +103,10 @@ Si no existen, escribir: "Ninguna corrección obligatoria." -->
 ### 1. [Criterio]
 
 **Problema:** [Qué incumple.]
-**Evidencia:** [Cita, ubicación y referencia contra la que se comparó.]
+**Fuente:** [REF-XXXX-000 — o "Brief", "Entregable" si no hay referencia registrada]
+**Regla / requisito:** [Qué exige la fuente.]
+**Tipo de evidencia:** [EVIDENCIA DOCUMENTAL / EVIDENCIA DEL BRIEF / EVIDENCIA DEL ENTREGABLE / CRITERIO PROFESIONAL]
+**Evidencia:** [Cita, ubicación y qué se encontró.]
 **Por qué importa:** [Efecto sobre el objetivo, la audiencia, la marca o el uso del entregable.]
 **Corrección requerida:** [Acción concreta.]
 
@@ -148,6 +153,23 @@ Si no existen, escribir: "Todos los criterios pudieron verificarse." -->
 | Criterio | Información necesaria para verificarlo |
 |---|---|
 | [Criterio] | [Documento, dato o evidencia faltante] |
+
+---
+
+## CONFLICTOS DE FUENTES
+
+<!-- Contradicciones entre referencias que la jerarquía de fuentes no
+resuelve (ver /quality-gate/references/source-priority.md).
+
+El criterio afectado se clasifica como NO VERIFICABLE. Nunca generar
+FAIL contra el responsable por referencias contradictorias.
+Si no existen, escribir: "Sin conflictos de fuentes." -->
+
+**Fuente A:** [ID — documento]
+**Fuente B:** [ID — documento]
+**Conflicto detectado:** [Qué dice cada una.]
+**Impacto:** [Criterios o elementos afectados.]
+**Decisión necesaria:** [Qué debe definirse y quién debe hacerlo.]
 
 ---
 
@@ -223,6 +245,22 @@ escribir: "No verificable: no se proporcionó la evaluación anterior." -->
 | Hallazgo | Evaluación anterior | Estado actual |
 |---|---|---|
 | [Hallazgo] | [PASS / WARNING / FAIL / NO VERIFICABLE] | [CORREGIDO / PENDIENTE / NUEVO HALLAZGO] |
+
+---
+
+## FUENTES CONSULTADAS
+
+<!-- Referencias de /quality-gate/references utilizadas en esta
+evaluación, según reference-index.md. Incluir sólo las que se
+consultaron realmente. Indicar también brief y otros documentos
+proporcionados para la pieza.
+Si no se consultó ninguna referencia registrada, escribir:
+"Sin referencias registradas consultadas; evaluación basada en brief,
+entregable y reglas de la gerencia." -->
+
+| ID | Documento | Versión | Aplicación |
+|---|---|---|---|
+| [REF-XXXX-000] | [Nombre del documento] | [Versión o "No especificado"] | [Criterios en los que se utilizó] |
 
 ---
 

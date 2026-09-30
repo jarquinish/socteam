@@ -32,6 +32,14 @@ se documenta con la plantilla de resultado.
     resultado-quality-gate.md
     formulario-entrega.md
 
+  /references               Fuentes de verdad: contra qué se evalúa
+    README.md
+    reference-index.md      Índice maestro de referencias
+    source-priority.md      Jerarquía de fuentes y conflictos
+    /brand  /campaigns  /content  /design
+    /marketing-digital  /soc-store  /corporate
+    /approved-examples
+
   /history                  Registro de revisiones realizadas
 
   /learning                 Aprendizaje continuo del sistema
@@ -47,3 +55,5 @@ se documenta con la plantilla de resultado.
 - [x] Plantillas
 - [x] Criterios V1 (propuesta de Dirección)
 - [ ] Calibración de criterios con gerentes
+- [x] Arquitectura de referencias
+- [ ] Carga de las primeras referencias
